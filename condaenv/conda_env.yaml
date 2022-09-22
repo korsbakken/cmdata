@@ -1,0 +1,21 @@
+name: gcp_china_regression_dev
+channels:
+  - conda-forge
+dependencies:
+  - python[version='>=3.9']
+  - ipykernel
+  - ruamel.yaml
+  - pydantic
+  - dvc
+  - dvc-ssh
+  - pandas
+  - xarray
+  - chardet
+  - beautifulsoup4
+  - lxml
+  - html5lib
+  - selenium
+  - geckodriver
+  - seaborn
+  - matplotlib
+
