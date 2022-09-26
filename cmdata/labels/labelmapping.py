@@ -258,7 +258,7 @@ class LabelMap:
         map_from: str,
         map_to: str = 'index',
         axis: tp.Literal['index', 'columns'] = 'index',
-        level: tp.Union[int, str, tp.Sequence[int], tp.Sequence[str]] = None
+        level: tp.Union[int, str] = None
     ) -> tp.Union[pd.DataFrame, pd.Series]:
         """Map the values of the index or columns of a DataFrame or Series
         
@@ -281,23 +281,38 @@ class LabelMap:
         axis : `'index'` or `'columns'`, optional
             Whether to map the index or column values of `pdobj`. Optional,
             `'index'` by default.
-        level : int, str or sequence of int or str, optional
-            Which levels to map, in the case of a MultiIndex. Will raise a
+        level : int or str
+            Which level to map, in the case of a MultiIndex. Will raise a
             `TypeError` if the index being mapped is not a MultiIndex. If None
-            or not specified, all levels will be mapped. Note that this may
-            raise an error if not all levels have values that are present
-            in the internal DataFrame column specified by `map_from`. In the
-            current implementation, there is no way to specify different values
-            for `map_from` or `map_to` for different levels. Instead, call the
-            method multiple times if necessary.
+            or not specified, all levels will be mapped. Note that this
+            parameter is not truly optional. It will default to None and must
+            not be specified if the index is not a MultiIndex, but is mandatory
+            if the index *is* a MultiIndex. In that case, a `ValueError` will be
+            raised if the parameter is not specified.
 
         Returns
         -------
         pandas.DataFrame or pandas.Series
             New pandas object with the same values as `pdobj` but mapped index
             or column values.
+
+        Raises
+        ------
+        TypeError
+            If the specified index is not a MultiIndex, but `level` is specified
+        ValueError
+            If the specified index is a MultiIndex, but `level` is not specified
         """
-        
+        # Get the index to map
+        indexobj: pd.Index = getattr(pdobj, axis)
+        if level is None and isinstance(indexobj, pd.MultiIndex):
+            raise ValueError('`level` must be specified for a MultiIndex.')
+        if level is not None and not isinstance(indexobj, pd.MultiIndex):
+            raise TypeError(
+                'Only MultiIndexes are accepted when `level` is not None'
+            )
+        if level is not None:
+
     ###END def LabelMap.map_pd_index
 
 ###END class LabelMap
