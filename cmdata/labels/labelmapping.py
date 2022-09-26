@@ -252,4 +252,52 @@ class LabelMap:
                 return mapped_obj
     ###END def LabelMap.map_pd
 
+    def map_pd_index(
+        self,
+        pdobj: tp.Union[pd.DataFrame, pd.Series],
+        map_from: str,
+        map_to: str = 'index',
+        axis: tp.Literal['index', 'columns'] = 'index',
+        level: tp.Union[int, str, tp.Sequence[int], tp.Sequence[str]] = None
+    ) -> tp.Union[pd.DataFrame, pd.Series]:
+        """Map the values of the index or columns of a DataFrame or Series
+        
+        The function maps values in a similar manner to `map_pd`, but maps the
+        index or columns of a pandas DataFrame or Series instead of the values
+        of the DataFrame/Series itself, and returns a new DataFrame/Series with
+        the same values as the original, but altered index/column values.
+
+        Parameters
+        ----------
+        pdobj : panas.DataFrame or pandas.Series
+            The pandas object for which to map the index or columns
+        map_from : str
+            Column of the internal DataFrame with the values to map from, or
+            `'index'` if mapping from the index. Same as the corresponding
+            parameter of `map_pd`.
+        map_to : str, optional
+            Column of the internal DataFrame with values to map to, or
+            `'index'`. Optional, defaults to `'index'`.
+        axis : `'index'` or `'columns'`, optional
+            Whether to map the index or column values of `pdobj`. Optional,
+            `'index'` by default.
+        level : int, str or sequence of int or str, optional
+            Which levels to map, in the case of a MultiIndex. Will raise a
+            `TypeError` if the index being mapped is not a MultiIndex. If None
+            or not specified, all levels will be mapped. Note that this may
+            raise an error if not all levels have values that are present
+            in the internal DataFrame column specified by `map_from`. In the
+            current implementation, there is no way to specify different values
+            for `map_from` or `map_to` for different levels. Instead, call the
+            method multiple times if necessary.
+
+        Returns
+        -------
+        pandas.DataFrame or pandas.Series
+            New pandas object with the same values as `pdobj` but mapped index
+            or column values.
+        """
+        
+    ###END def LabelMap.map_pd_index
+
 ###END class LabelMap
