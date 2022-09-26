@@ -5,6 +5,7 @@ industrial_production_products:
   code_type: industry_products
   orient: "index"
   columns: ["name_zh", "name_en", "longname_en"]
+  ordered: false
   data:
     NATGAS:
       name_zh: "天然气产量"
@@ -50,11 +51,13 @@ industrial_production_products:
       name_zh: "粗钢产量"
       name_en: "Crude steel"
       longname_en: "Crude steel production"
----
+
+
 industrial_production_monthly_measures:
   code_type: monthly_measures
   orient: "index"
   columns: ["name_zh", "name_en", "longname_en"]
+  ordered: false
   data:
     MONTHVOL:
       name_zh: "当期值"
