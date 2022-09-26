@@ -51,3 +51,20 @@ industrial_production_monthly_measures:
   code_type: monthly_measures
   orient: "index"
   columns: ["name_zh", "name_en", "longname_en"]
+  data:
+    MONTHVOL:
+      name_zh: "当期值"
+      name_en: "In-month volume"
+      longname_en: "Volume in given month"
+    CUMVOL: 
+      name_zh: "累计值"
+      name_en: "Cumulative volume"
+      longname_en: "Cumulative volume from start of year through given month"
+    YOYMONTHGROWTH: 
+      name_zh: "同比增长"
+      name_en: "YoY growth"
+      longname_en: "Year-on-year growth for given month"
+    YOYCUMGROWTH: 
+      name_zh: "累计增长"
+      name_en: "YoY cumulative growth"
+      longname_en: "Year-on-year cumulative growth (January through given month compared to same period previous year)"
