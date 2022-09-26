@@ -195,4 +195,61 @@ class LabelMap:
             return cls(_def, orient=orient)
     ###END def classmethod LabelMap.from_yaml
 
+    def map_pd(
+        self,
+        pdobj: tp.Union[pd.Series, pd.Index],
+        map_from: str,
+        map_to: str = 'index',
+        raise_on_missing: bool = True
+    ) -> tp.Union[pd.Series, pd.Index]:
+        """Map the values of a pandas `Series` or `Index`.
+        
+        Parameters
+        ----------
+        pdobj : pandas.Series or pandas.Index
+            The pandas object to map
+        map_from : str
+            The column name in the internal DataFrame of `self` to map from, or
+            `'index'` if mapping from the index codes (in which case the name of
+            the index can also be used, as given by `self.code_col_name`).
+        map_to : str, optional
+            The column name with values to map to (or `'index'` if mapping to
+            the index values, alternatively the index name /
+            `self.code_col_name`). Optional, defaults to `'index'`.
+        raise_on_missing : bool, optional
+            Whether to raise a `KeyError` if any values in `pdobj` are not
+            present in the internal DataFrame column specified by `map_from`. If
+            False, missing values will map to `NA`. Optional, True by default.
+
+        Returns
+        -------
+        pandas.Series or pandas.Index
+            A new pandas object with the mapped values.
+        """
+        mapper: pd.Series
+        mapping_df = self.get_df()
+        index_aliases: tp.Tuple[str, ...] = ('index', self.code_col_name)
+        if map_from in index_aliases:
+            if map_to in index_aliases:
+                mapper = pd.Series(data=mapping_df.index, index=mapping_df.index)
+            else:
+                mapper = mapping_df.reset_index()[map_to]
+        elif map_to in index_aliases:
+            mapper = mapping_df[map_to].reset_index().set_index(map_to)
+        else:
+            mapper = mapping_df[[map_to, map_from]].set_index(map_to, append=False)
+        if not raise_on_missing:
+            return pdobj.map(mapper)
+        else:
+            na_locs: pd.Series = pdobj.isna()
+            mapped_obj: tp.Union[pd.Series, pd.Index] = pdobj.map(mapper)
+            if not mapped_obj.isna().equals(na_locs):
+                raise KeyError(
+                    'Not all values in `pdobj` are present in values to be '
+                    'mapped from.'
+                )
+            else:
+                return mapped_obj
+    ###END def LabelMap.map_pd
+
 ###END class LabelMap
