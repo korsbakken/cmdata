@@ -15,13 +15,17 @@ industrial_production_products:
       name_en: "Crude oil"
       longname_en: "Crude oil production"
     OIL_REFIN_INPUT:
-      name_zh: "原油加工量"
+      name_zh: "原油加工量产量"
       name_en: "Refinery input"
       longname_en: "Crude oil input to refining"
     COALBEDGAS:
       name_zh: "煤层气产量"
       name_en: "Coal bed gas"
       longname_en: "Coal bed gas production"
+    RAWCOAL:
+      name_zh: "原煤产量"
+      name_en: "Raw coal"
+      longname_en: "Raw coal production"
     COKE:
       name_zh: "焦炭产量"
       name_en: "Coke"
