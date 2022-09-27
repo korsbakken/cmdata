@@ -9,7 +9,7 @@ from .stream_utils import file_or_stream
 
 def read_yaml(
     file: tp.Union[str, Path, tp.TextIO],
-    yaml_load_func: tp.Callable[[tp.IOO], dict] = yaml.safe_load,
+    yaml_load_func: tp.Callable[[tp.IO], dict] = yaml.safe_load,
     **kwargs
 ) -> tp.Dict[tp.Hashable, tp.Any]:
     """Read contents of a YAML file, with no further processing.
@@ -29,7 +29,7 @@ def read_yaml(
     dict
     """
     yaml_content: tp.Dict[tp.Hashable, tp.Any]
-    with file_or_stream as f:
+    with file_or_stream(file) as f:
         yaml_content = yaml_load_func(f, **kwargs)
     return yaml_content
 ###END def read_yaml
