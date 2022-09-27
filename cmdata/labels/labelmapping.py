@@ -45,6 +45,11 @@ class LabelMap:
     """Default name of the column or index containing codes in the internal
     DataFrame"""
 
+    def __repr__(self) -> str:
+        return f'Instance of {repr(self.__class__)}:\n' \
+            f'{repr(self._df)}'
+    ###END def LabelMap.__repr__
+
 
     def __init__(
         self,
