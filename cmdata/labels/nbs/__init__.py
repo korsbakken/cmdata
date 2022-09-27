@@ -38,7 +38,9 @@ yamlfiles: tp.Dict[str, Path] = FrozenDict(
 """Dict with paths to label definitions for different NBS datasets."""
 
 labelsets: FrozenDict = FrozenDict(
-    {_key: list(_yamldict.keys()) for _key, _yamldict in helpers.yaml_utils.read_yaml(yamlfiles.items())}
+    # {_key: list(_yamldict.keys()) for _key, _yamldict in helpers.yaml_utils.read_yaml(yamlfiles.items())}
+    {_key: list(helpers.yaml_utils.read_yaml(_file).keys())
+     for _key, _file in yamlfiles.items()}
 )
 """Label set identifiers in each NBS label definition file."""
 
