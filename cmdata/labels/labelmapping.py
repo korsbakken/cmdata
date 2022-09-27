@@ -258,7 +258,9 @@ class LabelMap:
         map_from: str,
         map_to: str = 'index',
         axis: tp.Literal['index', 'columns'] = 'index',
-        level: tp.Union[int, str] = None
+        level: tp.Union[int, str] = None,
+        raise_on_missing: bool = True,
+        inplace: bool = False
     ) -> tp.Union[pd.DataFrame, pd.Series]:
         """Map the values of the index or columns of a DataFrame or Series
         
@@ -289,6 +291,19 @@ class LabelMap:
             not be specified if the index is not a MultiIndex, but is mandatory
             if the index *is* a MultiIndex. In that case, a `ValueError` will be
             raised if the parameter is not specified.
+        raise_on_missing : bool, optional
+            Whether to raise a `KeyError` if any values in `pdobj` (or the
+            specified level of `pdobj`) are not present in the internal
+            DataFrame column specified by `map_from`. If False, missing values
+            will map to `NA`. Optional, True by default.
+        inplace : bool, optional
+            Whether to change the index of `pdobj` inplace. A best effort will
+            be made to make the change on the original `pandas` object and
+            return it, but it cannot be completely guaranteed that a copy will
+            not still be made internally by pandas. If you need to be certain
+            that the pandas object is still the same, use the `id()` built-in
+            function to compare the object before and after the mapping.
+            Optional, False by default.
 
         Returns
         -------
@@ -299,7 +314,8 @@ class LabelMap:
         Raises
         ------
         TypeError
-            If the specified index is not a MultiIndex, but `level` is specified
+            If the specified index is not a MultiIndex, but `level` is
+            specified, or if `level` is not a string or int.
         ValueError
             If the specified index is a MultiIndex, but `level` is not specified
         """
@@ -312,7 +328,30 @@ class LabelMap:
                 'Only MultiIndexes are accepted when `level` is not None'
             )
         if level is not None:
-
+            if isinstance(level, str):
+                level = indexobj.names.index(level)
+            if not isinstance(level, int):
+                raise TypeError(
+                    '`level` must be an int (level number) or str (level name)'
+                )
+            indexobj = indexobj.levels[level]
+        mapped_indexobj: pd.Index = self.map_pd(
+            pdobj,
+            map_from=map_from,
+            map_to=map_to,
+            raise_on_missing=raise_on_missing
+        )
+        # Assign the new index, either to a copy of `pdobj`` or the original,
+        # depending on the value of `inplace`.
+        if inplace:
+            pdobj = pdobj.copy(deep=False)
+        if level is None:
+            setattr(pdobj, axis, mapped_indexobj)
+        else:
+            new_multiindex: pd.MultiIndex = \
+                pdobj.index.set_levels(levels=mapped_indexobj, level=level)
+            pdobj.index = new_multiindex
+        return pdobj
     ###END def LabelMap.map_pd_index
 
 ###END class LabelMap
