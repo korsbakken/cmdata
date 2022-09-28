@@ -240,15 +240,18 @@ class LabelMap:
             else:
                 mapper = mapping_df.reset_index()[map_to]
         elif map_to in index_aliases:
-            mapper = mapping_df[map_to].reset_index().set_index(map_to)
+            mapper = mapping_df[map_from].reset_index().set_index(map_from)
         else:
-            mapper = mapping_df[[map_to, map_from]].set_index(map_to, append=False)
+            mapper = mapping_df[[map_to, map_from]].set_index(map_from, append=False)
         if not raise_on_missing:
             return pdobj.map(mapper)
         else:
             na_locs: pd.Series = pdobj.isna()
-            mapped_obj: tp.Union[pd.Series, pd.Index] = pdobj.map(mapper)
-            if not mapped_obj.isna().equals(na_locs):
+            # `mapper` is a 1-column DataFrame, must be turned into a Series by
+            # selecting just the first (and only) column.
+            mapped_obj: tp.Union[pd.Series, pd.Index] = \
+                pdobj.map(mapper.iloc[:,0])
+            if not np.array_equal(mapped_obj.isna(), na_locs, equal_nan=True):
                 raise KeyError(
                     'Not all values in `pdobj` are present in values to be '
                     'mapped from.'
@@ -341,7 +344,7 @@ class LabelMap:
                 )
             indexobj = indexobj.levels[level]
         mapped_indexobj: pd.Index = self.map_pd(
-            pdobj,
+            indexobj,
             map_from=map_from,
             map_to=map_to,
             raise_on_missing=raise_on_missing
@@ -354,8 +357,9 @@ class LabelMap:
             setattr(pdobj, axis, mapped_indexobj)
         else:
             new_multiindex: pd.MultiIndex = \
-                pdobj.index.set_levels(levels=mapped_indexobj, level=level)
-            pdobj.index = new_multiindex
+                getattr(pdobj, axis) \
+                    .set_levels(levels=mapped_indexobj, level=level)
+            setattr(pdobj, axis, new_multiindex)
         return pdobj
     ###END def LabelMap.map_pd_index
 
