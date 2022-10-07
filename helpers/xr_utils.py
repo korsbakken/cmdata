@@ -63,7 +63,7 @@ class XrTsUtils:
         """
         x: tp.Union[xr.Dataset, xr.DataArray] = self._xrobj
         s = x.shift({dim: shift_n})
-        return (x-s)/(shift_n - s)
+        return (x-s)/(shift_n * s)
     ###END def XrTsUtils.rel_diff
 
 ###END class XrTsUtils
