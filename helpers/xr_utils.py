@@ -105,6 +105,8 @@ class XrTsUtils:
             Name to give to the dimension that any non-singular values remaining
             after the unstacking are stored along. It is mandatory if the
             unstacking does not produce only a single element for each group.
+            The dimension will be assigned an integer coordinate running from 0
+            to the maximum length of the remainder across groups.
         keep_time_coord : bool, optional
             Whether or not to keep the original time values for each data point
             as a coordinate (which will then depend on all the dimensions in
@@ -131,9 +133,9 @@ class XrTsUtils:
         def _group_recursive(
             _x: tp.Union[xr.Dataset, xr.DataArray],
             _rem_groupers: tp.List[tp.Any]  # Remaining groupers
-        ) -> tp.Union[xr.Datset, xr.DataArray]:
+        ) -> tp.Union[xr.Dataset, xr.DataArray]:
             if _rem_groupers:
-                _curr_grouper = _rem_groupers.pop(index=0)
+                _curr_grouper = _rem_groupers.pop(0)
                 return _x.groupby(_curr_grouper).map(
                     lambda x: _group_recursive(x, _rem_groupers)
                 )
@@ -148,10 +150,15 @@ class XrTsUtils:
                     # the time values concatenated together as a separate
                     # dimension when the groupby function concatenates the
                     # results
-                    if remainder_dim in _x_return:
-                        del _x_return[remainder_dim]
+                    # # Old, remove the deletion of the remainder_dim coordinate
+                    # # below. We instead need to set an integer coordinate.
+                    # if remainder_dim in _x_return:
+                    #     del _x_return[remainder_dim]
+                    _x_return = _x_return.assign_coords(
+                        {remainder_dim: list(range(0, len(_time_coord)))}
+                    )
                     if keep_time_coord:
-                        _x_return = _x_return.set_coords(
+                        _x_return = _x_return.assign_coords(
                             {timedim: (remainder_dim, _time_coord.to_numpy())}
                         )
                 else:
@@ -166,6 +173,8 @@ class XrTsUtils:
                         del _x_return[timedim]
                     _x_return = _x_return.squeeze(timedim)
                 return _x_return
+        ###END def XrTsUtils.unstack_time._group_recursive
+        return _group_recursive(_x=xrobj, _rem_groupers=_groupers)
     ###END def XrTsUtils.unstack_time
 
 ###END class XrTsUtils
