@@ -67,6 +67,107 @@ class XrTsUtils:
         return (x-s)/(shift_n * s)
     ###END def XrTsUtils.rel_diff
 
+    def unstack_time(
+        self,
+        timedim: str,
+        groupers: tp.List[tp.Any],
+        remainder_dim: str = None,
+        keep_time_coord: bool = True
+    ) -> tp.Union[xr.Dataset, xr.DataArray]:
+        """Unstack the time dimension into components or groupers.
+        
+        Meant to unstack the time dimension into multiple dimensions according
+        to time components, such as year, month, hour, minute, but can also be
+        used to group along other variables. If each resulting group contains
+        more than one element (e.g., if the time dimension is unstacked by year
+        and month, but there is more than one data point for some or all
+        months), a remainder dimension name must be specified using the
+        `'remainder_dim'` parameter.
+
+        Parameters
+        ----------
+        timedim : str
+            Name of the time dimension to unstack
+        groupers : list of groupers or strings
+            What time components or other groupers to use for ustacking the time
+            dimension. Each element will be used as an argument to the xarray
+            object's `groupby` function, which is called iteratively during the
+            unstacking, so any object that can be passed to `groupby` is in
+            principle a valid element of `groupers` (although not all arguments
+            will produce valid results). The most common use case is to use
+            strings that correspond to time components. These can either be of
+            the form `timedimname.componentname` (e.g., `'time.year'`), or just
+            `componentname` (in which case it is assumed that you mean the name
+            of a component of the `dt` accessor of the time dimension coordinate
+            array). NB! Groupers must be a list or other sequence. If you have
+            just one grouper, enclose it in a single-element list or tuple.
+        remainder_dim : str, optional
+            Name to give to the dimension that any non-singular values remaining
+            after the unstacking are stored along. It is mandatory if the
+            unstacking does not produce only a single element for each group.
+        keep_time_coord : bool, optional
+            Whether or not to keep the original time values for each data point
+            as a coordinate (which will then depend on all the dimensions in
+            `groupers`, and on `remainder_dim` if applicable). The coordinate
+            will have the same name as the original time dimension (which will
+            not exist as a dimension in the returned object). Optional, True by
+            default.
+        """
+        xrobj: tp.Union[xr.Dataset, xr.DataArray] = self._xrobj
+        # First convert strings to proper groupers
+        _groupers = [None] * len(groupers)
+        _i: int
+        for _i, _grouper in enumerate(groupers):
+            if isinstance(_grouper, str) \
+                    and not _grouper.startswith(timedim+'.'):
+                _groupers[_i] = getattr(xrobj[timedim].dt, _grouper)
+            else:
+                _groupers[_i] = _grouper
+        # Then group and unstack
+        # lastgroup: tp.Union[xr.core.groupby.DatasetGroupBy,
+        #                     xr.core.groupbyDataArrayGroupBy] \
+        #     = xrobj.groupby(_groupers[0])
+        # Define a function to recursively group
+        def _group_recursive(
+            _x: tp.Union[xr.Dataset, xr.DataArray],
+            _rem_groupers: tp.List[tp.Any]  # Remaining groupers
+        ) -> tp.Union[xr.Datset, xr.DataArray]:
+            if _rem_groupers:
+                _curr_grouper = _rem_groupers.pop(index=0)
+                return _x.groupby(_curr_grouper).map(
+                    lambda x: _group_recursive(x, _rem_groupers)
+                )
+            else:
+                _x_return: tp.Union[xr.Dataset, xr.DataArray] = \
+                    _x.copy(deep=False)
+                _time_coord: xr.DataArray = _x_return['time'].copy(deep=False) \
+                    if keep_time_coord else None
+                if remainder_dim:
+                    _x_return = _x_return.rename({timedim: remainder_dim})
+                    # Delete the time dim index to ensure that we don't get all
+                    # the time values concatenated together as a separate
+                    # dimension when the groupby function concatenates the
+                    # results
+                    if remainder_dim in _x_return:
+                        del _x_return[remainder_dim]
+                    if keep_time_coord:
+                        _x_return = _x_return.set_coords(
+                            {timedim: (remainder_dim, _time_coord.to_numpy())}
+                        )
+                else:
+                    if len(_time_coord) > 1:
+                        raise ValueError(
+                            'Remaining time dimension is longer than 1 element'
+                            ' for at least one time group. You must specify a '
+                            'value for `remainder_dim` to store the remainder '
+                            'values.'
+                        )
+                    if not keep_time_coord and timedim in _x_return:
+                        del _x_return[timedim]
+                    _x_return = _x_return.squeeze(timedim)
+                return _x_return
+    ###END def XrTsUtils.unstack_time
+
 ###END class XrTsUtils
 
 
