@@ -135,9 +135,15 @@ class XrTsUtils:
             _rem_groupers: tp.List[tp.Any]  # Remaining groupers
         ) -> tp.Union[xr.Dataset, xr.DataArray]:
             if _rem_groupers:
-                _curr_grouper = _rem_groupers.pop(0)
+                _curr_grouper = _rem_groupers[0]
+                # If _curr_grouper is a string not starting with the name of
+                # the time dimension, assume that it is the name of an
+                # attribute of the `dt` accessor.
+                if isinstance(_curr_grouper, str) \
+                        and not _curr_grouper.startswith(timedim+'.'):
+                    _curr_grouper = getattr(_x[timedim].dt, _curr_grouper)
                 return _x.groupby(_curr_grouper).map(
-                    lambda x: _group_recursive(x, _rem_groupers)
+                    lambda x: _group_recursive(x, _rem_groupers[1:])
                 )
             else:
                 _x_return: tp.Union[xr.Dataset, xr.DataArray] = \
@@ -174,7 +180,7 @@ class XrTsUtils:
                     _x_return = _x_return.squeeze(timedim)
                 return _x_return
         ###END def XrTsUtils.unstack_time._group_recursive
-        return _group_recursive(_x=xrobj, _rem_groupers=_groupers)
+        return _group_recursive(_x=xrobj, _rem_groupers=groupers)
     ###END def XrTsUtils.unstack_time
 
 ###END class XrTsUtils
