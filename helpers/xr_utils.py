@@ -290,6 +290,29 @@ def _get_regfuncs(
     return regfuncs
 ###END def _get_regfuncs
 
+def register_accessor(
+    name: str,
+    accessor_cls: type,
+    xrtype: tp.Literal['Dataset', 'DataArray', 'both'] = 'both'
+):
+    """Register a generic accessor with selected Xarray classes.
+    
+    Parameters
+    ----------
+    name : str
+        Name to give to the accessor.
+    accessor_cls : type
+        The accessor class to register
+    xrtype : str, optional
+        What xarray object type to register the accessor for. Can be
+        `'Dataset'`, `'DataArray'` or `'both'`. Optional, `'both'` by default.
+    """
+    regfuncs: tp.List[tp.Callable] = _get_regfuncs(xrtype=xrtype)
+    _func: tp.Callable[[str], tp.Callable]
+    for _func in regfuncs:
+        _func(name)(accessor_cls)
+###END def register_accessor
+
 def register_tsutils(
     name: str = 'tsutils',
     xrtype: tp.Literal['Dataset', 'DataArray', 'both'] = 'both'
@@ -304,10 +327,7 @@ def register_tsutils(
         What xarray object type to register the accessor for. Can be
         `'Dataset'`, `'DataArray'` or `'both'`. Optional, `'both'` by default.
     """
-    regfuncs: tp.List[tp.Callable] = _get_regfuncs(xrtype=xrtype)
-    _func: tp.Callable[[str], tp.Callable]
-    for _func in regfuncs:
-        _func(name)(XrTsUtils)
+    register_accessor(name=name, accessor_cls=XrTsUtils, xrtype=xrtype)
 ###END def register_tsutils
 
 def register_plotutils(
@@ -324,8 +344,5 @@ def register_plotutils(
         What xarray object type to register the accessor for. Can be
         `'Dataset'`, `'DataArray'` or `'both'`. Optional, `'both'` by default.
     """
-    regfuncs: tp.List[tp.Callable] = _get_regfuncs(xrtype=xrtype)
-    _func: tp.Callable[[str], tp.Callable]
-    for _func in regfuncs:
-        _func(name)(XrPlotUtils)
+    register_accessor(name=name, accessor_cls=XrPlotUtils, xrtype=xrtype)
 ###END def register_plotutils
