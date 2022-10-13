@@ -1,0 +1,138 @@
+# Labels and hierarchy for IEA extended CO2 emissions from fuel combustion dataset
+%YAML 1.2
+---
+flow_hierarchy:
+  orient: "columns"
+  columns: ["level", "parent", "long_name"]
+  ordered: true
+  data:
+    level:
+      # Level 99 denotes memos, not to be summed up with anything
+      CO2FCOMB: 1
+      MAINPROD: 2
+      MAINELEC: 3
+      MAINCHP: 3
+      MAINHEAT: 3
+      EPOWERPLT: 3
+      AUTOPROD: 2
+      AUTOELEC: 3
+      AUTOCHP: 3
+      AUTOHEAT: 3
+      OTHEN: 2
+      TOTIND: 2
+      MINING: 3
+      CONSTRUC: 3
+      MANUFACT: 3
+      IRONSTL: 4
+      CHEMICAL: 4
+      NONFERR: 4
+      NONMET: 4
+      TRANSEQ: 4
+      MACHINE: 4
+      FOODPRO: 4
+      PAPERPRO: 4
+      WOODPRO: 4
+      TEXTILES: 4
+      INONSPEC: 3
+      TOTTRANS: 2
+      ROAD: 3
+      DOMESAIR: 3
+      RAIL: 3
+      PIPELINE: 3
+      DOMESNAV: 3
+      TRNONSPE: 3
+      RESIDENT: 2
+      COMMPUB: 2
+      AGRICULT: 2
+      FISHING: 2
+      ONONSPEC: 2
+      MARBUNK: 99
+      AVBUNK: 99
+      TFC: 99
+      ELECHEAT: 99
+    parent:
+      CO2FCOMB: ""
+      MAINPROD: "CO2FCOMB"
+      MAINELEC: "MAINPROD"
+      MAINCHP: "MAINPROD"
+      MAINHEAT: "MAINPROD"
+      EPOWERPLT: "MAINPROD"
+      AUTOPROD: "CO2FCOMB"
+      AUTOELEC: "AUTOPROD"
+      AUTOCHP: "AUTOPROD"
+      AUTOHEAT: "AUTOPROD"
+      OTHEN: "CO2FCOMB"
+      TOTIND: "CO2FCOMB"
+      MINING: "TOTIND"
+      CONSTRUC: "TOTIND"
+      MANUFACT: "TOTIND"
+      IRONSTL: "MANUFACT"
+      CHEMICAL: "MANUFACT"
+      NONFERR: "MANUFACT"
+      NONMET: "MANUFACT"
+      TRANSEQ: "MANUFACT"
+      MACHINE: "MANUFACT"
+      FOODPRO: "MANUFACT"
+      PAPERPRO: "MANUFACT"
+      WOODPRO: "MANUFACT"
+      TEXTILES: "MANUFACT"
+      INONSPEC: "TOTIND"
+      TOTTRANS: "CO2FCOMB"
+      ROAD: "TOTTRANS"
+      DOMESAIR: "TOTTRANS"
+      RAIL: "TOTTRANS"
+      PIPELINE: "TOTTRANS"
+      DOMESNAV: "TOTTRANS"
+      TRNONSPE: "TOTTRANS"
+      RESIDENT: "CO2FCOMB"
+      COMMPUB: "CO2FCOMB"
+      AGRICULT: "CO2FCOMB"
+      FISHING: "CO2FCOMB"
+      ONONSPEC: "CO2FCOMB"
+      MARBUNK: 99
+      AVBUNK: 99
+      TFC: 99
+      ELECHEAT: 99
+    long_name:
+      CO2FCOMB: "CO2 fuel combustion"
+      MAINPROD: "Main activity electricity and heat production"
+      MAINELEC: "Main activity electricity plants"
+      MAINCHP: "Main activity CHP plants"
+      MAINHEAT: "Main activity heat plants"
+      EPOWERPLT: "Own use in electricity, CHP and heat plants"
+      AUTOPROD: "Unallocated autoproducers"
+      AUTOELEC: "Autoproducer electricity plants"
+      AUTOCHP: "Autoproducer CHP plants"
+      AUTOHEAT: "Autoproducer heat plants"
+      OTHEN: "Other energy industry own use"
+      TOTIND: "Manufacturing industries and construction"
+      MINING: " Mining and quarrying"
+      CONSTRUC: " Construction"
+      MANUFACT: " Manufacturing"
+      IRONSTL: "  Iron and steel"
+      CHEMICAL: "  Chemical and petrochemical"
+      NONFERR: "  Non-ferrous metals"
+      NONMET: "  Non-metallic minerals"
+      TRANSEQ: "  Transport equipment"
+      MACHINE: "  Machinery"
+      FOODPRO: "  Food and tobacco"
+      PAPERPRO: "  Paper, pulp and printing"
+      WOODPRO: "  Wood and wood products"
+      TEXTILES: "  Textile and leather"
+      INONSPEC: " Industry not elsewhere specified"
+      TOTTRANS: "Transport"
+      ROAD: " Road"
+      DOMESAIR: " Domestic aviation"
+      RAIL: " Rail"
+      PIPELINE: " Pipeline transport"
+      DOMESNAV: " Domestic navigation"
+      TRNONSPE: " Transport not elsewhere specified"
+      RESIDENT: "Residential"
+      COMMPUB: "Commercial and public services"
+      AGRICULT: "Agriculture\/forestry"
+      FISHING: "Fishing"
+      ONONSPEC: "Final consumption not elsewhere specified"
+      MARBUNK: "Memo: International marine bunkers"
+      AVBUNK: "Memo: International aviation bunkers"
+      TFC: "Memo: Total final consumption"
+      ELECHEAT: "Memo: Electricity and heat production"
