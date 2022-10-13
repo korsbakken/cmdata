@@ -269,6 +269,18 @@ class XrPlotUtils:
 
 ###END class XrPlotUtils
 
+class XrDisplayUtils:
+    """Xarray accessor class for extra display-related functionality."""
+
+    __slots__ = ('_xrobj')
+    _xrobj: XrObj
+
+    def __init__(self, xrobj: XrObj):
+        self._xrobj: tp.Union[xr.Dataset, xr.DataArray] = xrobj
+    ###END def XrDisplayUtils.__init__
+
+###END class XrDisplayUtils
+
 def _get_regfuncs(
     xrtype: tp.Literal['Dataset', 'DataArray', 'both'] = 'both'
 ) -> tp.List[tp.Callable[[str], tp.Callable]]:
@@ -346,3 +358,20 @@ def register_plotutils(
     """
     register_accessor(name=name, accessor_cls=XrPlotUtils, xrtype=xrtype)
 ###END def register_plotutils
+
+def register_displayutils(
+    name: str = 'display',
+    xrtype: tp.Literal['Dataset', 'DataArray', 'both'] = 'both'
+):
+    """Reguster XrDisplayUtils as xarray accessor `display`.
+    
+    Parameters
+    ----------
+    name : str, optional
+        Name to give to the accessor. Optional, `'display'` by default
+    xrtype : str, optional
+        What xarray object type to register the accessor for. Can be
+        `'Dataset'`, `'DataArray'` or `'both'`. Optional, `'both'` by default.
+    """
+    register_accessor(name=name, accessor_cls=XrDisplayUtils, xrtype=xrtype)
+###END def register_displayutils
