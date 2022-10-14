@@ -9,7 +9,7 @@ from ..labelfiles import LabelMap
 _filemanager: LabelfileManager = LabelfileManager(
     yamlfiles_root=Path(__file__).parent,
     yamlfiles={
-        'CO2_bigco2': Path('CO2_bigco2_labels.yaml')
+        'GHG_bigco2': Path('GHG_bigco2_labels.yaml')
         # 'WEB_wbal': Path('WEB_wbal_labels.yaml')
     }
 )
