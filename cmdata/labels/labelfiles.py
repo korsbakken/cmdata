@@ -73,7 +73,7 @@ class LabelfileManager:
         self.yamlfiles = FrozenDict(
             {
                 _file_id: yamlfiles_root / _file_path
-                for _file_id, _file_path in yamlfiles
+                for _file_id, _file_path in yamlfiles.items()
             }
         )
         self.labelsets = FrozenDict(self.read_labelsets())
