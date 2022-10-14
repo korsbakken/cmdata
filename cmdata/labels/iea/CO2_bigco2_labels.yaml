@@ -8,61 +8,72 @@ flow_hierarchy:
   data:
     level:
       # Level 99 denotes memos, not to be summed up with anything
+      # Note that in the IEA documentation, TFC and ELECHEAT are defined as
+      # memos. However, in practice they are in fact (as far as I understand
+      # the documentation, and have verfied through a quick check) equal to the
+      # sum of all final consumption emissions (excl. electricity/heat and
+      # energy industry own use), and sum of MAINPROD+AUTOPROD, resepectively.
+      # Also, TFC+ELECHEAT+OTHEN appears to sum up to CO2FCOMB. So logically,
+      # TFC and ELECHEAT should be main flows at the level directly below
+      # CO2FCOMB (along with OTHEN), while the final consumption flows and
+      # electricity/heat generation flows should be at the level below them
+      # and have them as parents. Hence, TFC, ELECHEAT and OTHEN are at level
+      # 2 below, and not 99.
       CO2FCOMB: 1
-      MAINPROD: 2
-      MAINELEC: 3
-      MAINCHP: 3
-      MAINHEAT: 3
-      EPOWERPLT: 3
-      AUTOPROD: 2
-      AUTOELEC: 3
-      AUTOCHP: 3
-      AUTOHEAT: 3
+      MAINPROD: 3
+      MAINELEC: 4
+      MAINCHP: 4
+      MAINHEAT: 4
+      EPOWERPLT: 4
+      AUTOPROD: 3
+      AUTOELEC: 4
+      AUTOCHP: 4
+      AUTOHEAT: 4
       OTHEN: 2
-      TOTIND: 2
-      MINING: 3
-      CONSTRUC: 3
-      MANUFACT: 3
-      IRONSTL: 4
-      CHEMICAL: 4
-      NONFERR: 4
-      NONMET: 4
-      TRANSEQ: 4
-      MACHINE: 4
-      FOODPRO: 4
-      PAPERPRO: 4
-      WOODPRO: 4
-      TEXTILES: 4
-      INONSPEC: 3
-      TOTTRANS: 2
-      ROAD: 3
-      DOMESAIR: 3
-      RAIL: 3
-      PIPELINE: 3
-      DOMESNAV: 3
-      TRNONSPE: 3
-      RESIDENT: 2
-      COMMPUB: 2
-      AGRICULT: 2
-      FISHING: 2
-      ONONSPEC: 2
+      TOTIND: 3
+      MINING: 4
+      CONSTRUC: 4
+      MANUFACT: 4
+      IRONSTL: 5
+      CHEMICAL: 5
+      NONFERR: 5
+      NONMET: 5
+      TRANSEQ: 5
+      MACHINE: 5
+      FOODPRO: 5
+      PAPERPRO: 5
+      WOODPRO: 5
+      TEXTILES: 5
+      INONSPEC: 4
+      TOTTRANS: 3
+      ROAD: 4
+      DOMESAIR: 4
+      RAIL: 4
+      PIPELINE: 4
+      DOMESNAV: 4
+      TRNONSPE: 4
+      RESIDENT: 3
+      COMMPUB: 3
+      AGRICULT: 3
+      FISHING: 3
+      ONONSPEC: 3
       MARBUNK: 99
       AVBUNK: 99
-      TFC: 99
-      ELECHEAT: 99
+      TFC: 2
+      ELECHEAT: 2
     parent:
       CO2FCOMB: ""
-      MAINPROD: "CO2FCOMB"
+      MAINPROD: "ELECHEAT"
       MAINELEC: "MAINPROD"
       MAINCHP: "MAINPROD"
       MAINHEAT: "MAINPROD"
       EPOWERPLT: "MAINPROD"
-      AUTOPROD: "CO2FCOMB"
+      AUTOPROD: "ELECHEAT"
       AUTOELEC: "AUTOPROD"
       AUTOCHP: "AUTOPROD"
       AUTOHEAT: "AUTOPROD"
       OTHEN: "CO2FCOMB"
-      TOTIND: "CO2FCOMB"
+      TOTIND: "TFC"
       MINING: "TOTIND"
       CONSTRUC: "TOTIND"
       MANUFACT: "TOTIND"
@@ -77,22 +88,22 @@ flow_hierarchy:
       WOODPRO: "MANUFACT"
       TEXTILES: "MANUFACT"
       INONSPEC: "TOTIND"
-      TOTTRANS: "CO2FCOMB"
+      TOTTRANS: "TFC"
       ROAD: "TOTTRANS"
       DOMESAIR: "TOTTRANS"
       RAIL: "TOTTRANS"
       PIPELINE: "TOTTRANS"
       DOMESNAV: "TOTTRANS"
       TRNONSPE: "TOTTRANS"
-      RESIDENT: "CO2FCOMB"
-      COMMPUB: "CO2FCOMB"
-      AGRICULT: "CO2FCOMB"
-      FISHING: "CO2FCOMB"
-      ONONSPEC: "CO2FCOMB"
-      MARBUNK: 99
-      AVBUNK: 99
-      TFC: 99
-      ELECHEAT: 99
+      RESIDENT: "TFC"
+      COMMPUB: "TFC"
+      AGRICULT: "TFC"
+      FISHING: "TFC"
+      ONONSPEC: "TFC"
+      MARBUNK: "MEMO_TOTTRANS"
+      AVBUNK: "MEMO_TOTTRANS"
+      TFC: "CO2FCOMB"
+      ELECHEAT: "CO2FCOMB"
     long_name:
       CO2FCOMB: "CO2 fuel combustion"
       MAINPROD: "Main activity electricity and heat production"
