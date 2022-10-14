@@ -51,13 +51,13 @@ class LabelfileManager:
 
     __slots__ = ('_yamlfiles_root', 'yamlfiles', 'labelsets')
     _yamlfiles_root: Path
-    yamlfiles: tp.Dict[str, Path]
-    labelsets: tp.Dict[str, tp.List[str]]
+    yamlfiles: tp.Mapping[str, Path]
+    labelsets: tp.Mapping[str, tp.List[str]]
 
     def __init__(
         self,
         yamlfiles_root: Path,
-        yamlfiles: tp.Dict[str, Path]
+        yamlfiles: tp.Mapping[str, Path]
     ):
         """
         Parameters
@@ -79,7 +79,7 @@ class LabelfileManager:
         self.labelsets = FrozenDict(self.read_labelsets())
     ###END def LabelfileManager.__init__
 
-    def read_labelsets(self) -> tp.Dict[str, tp.List[str]]:
+    def read_labelsets(self) -> tp.Mapping[str, tp.List[str]]:
         return {
             _key: list(helpers.yaml_utils.read_yaml(_file).keys())
             for _key, _file in self.yamlfiles.items()
