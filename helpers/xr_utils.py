@@ -281,6 +281,57 @@ class XrDisplayUtils:
 
 ###END class XrDisplayUtils
 
+
+class XrExtsel:
+    """Xarray accessor class for extra selection functionality.
+    
+    The class can be called directly as a function. It will then act as the
+    native `.sel` method in xarray `DataArray` and `Dataset`, but with the added
+    functionality that keywords can be any coordinate (or data variable, in the
+    case of a `Dataset` contained in the xarray object.
+    
+    Parameters
+    ----------
+    **kwargs
+        Any keyword argument that is equal to a dimension name will call the
+        native `.sel` method and filter the xarray object using that. Any other
+        keyword will be interpreted as `xrobj.loc[xrobj[key]==val]`, where `key`
+        is the keyword argument name, `val` is the value, and `xrobj` is the
+        xarray object. If `val` is a list (*must* be a `list` instance, not
+        another type of sequence), it will be interpreted as
+        `xrobj.loc[xrobj[key].isin(val)]`. Multiple keyword arguments will
+        successively filter the xarray object, from left to right.
+
+    Returns
+    -------
+    xarray.Dataset or xarray.DataFrame
+        The filtered xarray object
+    """
+
+    __slots__ = ('_xrobj')
+    _xrobj: XrObj
+
+    def __init__(self, xrobj: XrObj):
+        self._xrobj: tp.Union[xr.Dataset, xr.DataArray] = xrobj
+    ###END class XrExtsel.__init__
+
+    def __call__(self, **kwargs) -> tp.Union[xr.Dataset, xr.DataArray]:
+        xrobj = self._xrobj
+        _key: str
+        _val: tp.Any
+        for _key, _val in kwargs.items():
+            if _key in xrobj.dims:
+                xrobj = xrobj.sel(**{_key: _val})
+            elif isinstance(_val, list):
+                xrobj = xrobj.loc[xrobj[_key].isin(_val)]
+            else:
+                xrobj = xrobj.loc[xrobj[_key] == _val]
+        return xrobj
+    ###END def XrExtsel.__call__
+
+###END class XrExtsel
+
+
 def _get_regfuncs(
     xrtype: tp.Literal['Dataset', 'DataArray', 'both'] = 'both'
 ) -> tp.List[tp.Callable[[str], tp.Callable]]:
