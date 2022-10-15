@@ -328,10 +328,19 @@ class XrExtsel:
         for _key, _val in kwargs.items():
             if _key in xrobj.dims:
                 xrobj = xrobj.sel(**{_key: _val})
-            elif isinstance(_val, list):
-                xrobj = xrobj.loc[xrobj[_key].isin(_val)]
             else:
-                xrobj = xrobj.loc[xrobj[_key] == _val]
+                _var: xr.DataArray = xrobj[_key]
+                if _var.ndim > 1:
+                    raise ValueError(
+                        f'Cannot select on multidimension array `{_key}`.'
+                    )
+                _seldim: str = _var.dims[0]
+                if isinstance(_val, list):
+                    xrobj = xrobj.loc[{_seldim: xrobj[_key].isin(_val)}]
+                else:
+                    xrobj = xrobj.loc[{_seldim: xrobj[_key] == _val}]
+                    if xrobj.sizes[_seldim] <= 1:
+                        xrobj = xrobj.squeeze(_seldim)
         return xrobj
     ###END def XrExtsel.__call__
 
