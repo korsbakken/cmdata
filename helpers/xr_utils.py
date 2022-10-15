@@ -288,7 +288,7 @@ class XrExtsel:
     The class can be called directly as a function. It will then act as the
     native `.sel` method in xarray `DataArray` and `Dataset`, but with the added
     functionality that keywords can be any coordinate (or data variable, in the
-    case of a `Dataset` contained in the xarray object.
+    case of a `Dataset`) contained in the xarray object.
     
     Parameters
     ----------
@@ -300,7 +300,13 @@ class XrExtsel:
         xarray object. If `val` is a list (*must* be a `list` instance, not
         another type of sequence), it will be interpreted as
         `xrobj.loc[xrobj[key].isin(val)]`. Multiple keyword arguments will
-        successively filter the xarray object, from left to right.
+        successively filter the xarray object, from left to right. Note that
+        only 1-dimensional variables can be used for filtering, due to
+        ambiguities that arise when using multidimensional variables. For
+        filtering on multidimensional variables, instead use `XrExtsel.where`,
+        which will return an object will null values in the case that an element
+        is filtered out in one or more dimensions but retained in one or more
+        others.
 
     Returns
     -------
@@ -328,6 +334,17 @@ class XrExtsel:
                 xrobj = xrobj.loc[xrobj[_key] == _val]
         return xrobj
     ###END def XrExtsel.__call__
+
+    def where(self, drop: bool = True, **kwargs) \
+            -> tp.Union[xr.Dataset, xr.DataArray]:
+        """Extended version of `.where`, with `drop=True` as default.
+        
+        Not yet implemented. Will later be implemented to allow keyword
+        arguments that are the name of any variable in the xarray object, and
+        will use `.where` to filter on provided values of that variable (thus
+        making the syntax more convenient and similar to `.sel`."""
+        raise NotImplementedError('`XrExtsel.where` is not yet implemented.')
+    ###END def XrExtsel.where
 
 ###END class XrExtsel
 
@@ -426,3 +443,20 @@ def register_displayutils(
     """
     register_accessor(name=name, accessor_cls=XrDisplayUtils, xrtype=xrtype)
 ###END def register_displayutils
+
+def register_extsel(
+    name: str = 'extsel',
+    xrtype: tp.Literal['Dataset', 'DataArray', 'both'] = 'both'
+):
+    """Reguster XrExtsel as xarray accessor `extsel`.
+    
+    Parameters
+    ----------
+    name : str, optional
+        Name to give to the accessor. Optional, `'extsel'` by default
+    xrtype : str, optional
+        What xarray object type to register the accessor for. Can be
+        `'Dataset'`, `'DataArray'` or `'both'`. Optional, `'both'` by default.
+    """
+    register_accessor(name=name, accessor_cls=XrExtsel, xrtype=xrtype)
+###END def register_extsel
