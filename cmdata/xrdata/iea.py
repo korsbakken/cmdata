@@ -100,7 +100,7 @@ def add_hierarchy(
         # into the dataset.
         _labeldf: pd.DataFrame = iealabels.get_label_map(
             dataset_id, _labelset
-        ).get_df() \
+        ).get_df()[['level', 'parent']] \
             .rename(
                 columns={
                     'level': f'{_currdim}_level',
@@ -108,6 +108,9 @@ def add_hierarchy(
                 }
             ) \
                 .rename_axis(index=_currdim)
-        xrobj = xrobj.assign_coords(_labeldf)
+        _colname: str
+        xrobj = xrobj.assign_coords(
+            {_colname: _labeldf[_colname] for _colname in _labeldf.columns}
+        )
     return xrobj
 ###END def add_hierarchy
