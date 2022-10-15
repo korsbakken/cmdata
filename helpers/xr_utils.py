@@ -22,6 +22,40 @@ import pandas as pd
 XrObj: type = tp.Union[xr.Dataset, xr.DataArray]
 
 
+_registered_acessors: tp.Dict[type, str] = dict()
+"""Internal dict to hold names of registered accessors. The keys are the
+registered accessor classes (types), the values are the names (str) they are
+registered with."""
+
+def registered_name(accessor_cls: type) -> str:
+    """Get the name that an accessor class has been registered under. Returns
+    None if the class has not been registered at all.
+    """
+    return _registered_acessors.get(accessor_cls, None)
+###END def registered_name
+
+def registered_class(accessor_name: str) -> type:
+    """Get the accessor class registered under a given name. Returns None if no
+    class has been registered under that name.
+    
+    NB! Only returns classes that have been registered by this module, not
+    accessors that have been registered by other modules or external code."""
+    _name: str
+    _cls: type
+    for _cls, _name in _registered_acessors.items():
+        if _name == accessor_name:
+            return _cls
+    return None
+###END def registered_class
+
+def registered_accessors() -> tp.Dict[type, str]:
+    """Returns a dict of registered accessors.
+    
+    The keys are the accessor classes (type objects). The values are the names
+    they are registered under (str)."""
+    return _registered_acessors.copy()
+###END def registerd_accessors
+
 class XrTsUtils:
     """Accessor class for xarray, for time series and growth rates."""
 
@@ -400,6 +434,7 @@ def register_accessor(
     _func: tp.Callable[[str], tp.Callable]
     for _func in regfuncs:
         _func(name)(accessor_cls)
+    _registered_acessors[accessor_cls] = name
 ###END def register_accessor
 
 def register_tsutils(
