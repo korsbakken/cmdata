@@ -13,6 +13,13 @@ import pandas as pd
 from ..labels import iea as iealabels
 from .. import helpers
 
+
+# Check that xr_utils.XrExtsel has been registered, or register it if
+# necessary.
+if not helpers.xr_utils.registered_name(helpers.xr_utils.XrExtsel):
+    helpers.xr_utils.register_extsel()
+
+
 # Get dimension names
 from ..names import iea
 DN: iea.DimNames
@@ -68,9 +75,16 @@ def add_hierarchy(
         information for the given dimension. Optional. By default,
         `'_hierarchy'` will be suffixed to the dimension name(s) in `dim`.
     """
-    xrobj = xrobj.copy(deep=False)
     if dim is None:
         dim = [DN.FLOW]
+    _dim: str
+    if any([not isinstance(_dim, str) for _dim in dim]):
+        raise TypeError('All elements in `dim` must be strings.')
+    for _dim in dim:
+        if not _dim in xrobj.dims:
+            raise ValueError(
+                f'The xarray object does not contain the dimension `{_dim}`.'
+            )
     if isinstance(dim, str):
         dim = [dim]
     _currdim: str
@@ -80,8 +94,20 @@ def add_hierarchy(
         if not _currdim in hierarchy_labelsets:
             hierarchy_labelsets[_currdim] = f'{_currdim}_hierarchy'
         _labelset: str = hierarchy_labelsets[_currdim]
-        _labelmap: iealabels.LabelMap = iealabels.get_label_map(
+        # Get the DataFrame with levels and parents, then rename the columns
+        # to have the desired coordinate names, and the index to have the same
+        # as the dimension, so that the DataFrame can easily be imported back
+        # into the dataset.
+        _labeldf: pd.DataFrame = iealabels.get_label_map(
             dataset_id, _labelset
-        )
-
+        ).get_df() \
+            .rename(
+                columns={
+                    'level': f'{_currdim}_level',
+                    'parent': f'{_currdim}_parent'
+                }
+            ) \
+                .rename_axis(index=_currdim)
+        xrobj = xrobj.assign_coords(_labeldf)
+    return xrobj
 ###END def add_hierarchy
