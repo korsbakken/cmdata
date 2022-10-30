@@ -18,6 +18,7 @@ import typing as tp
 
 import xarray as xr
 import pandas as pd
+import numpy as np
 
 XrObj: type = tp.Union[xr.Dataset, xr.DataArray]
 
@@ -392,6 +393,132 @@ class XrExtsel:
 ###END class XrExtsel
 
 
+class XrTrafoUtils:
+    """Accessor with functionality for mapping/transforming xarray objects"""
+
+    __slots__ = ('_xrobj',)
+    _xrobj: XrObj
+
+    def __init__(self, xrobj: XrObj):
+        self._xrobj: tp.Union[xr.Dataset, xr.DataArray] = xrobj
+    ###END class XrTrafoUtils.__init__
+
+    @staticmethod
+    def _map_xr_values(
+        arr: xr.DataArray,
+        mapper: tp.Union[
+            tp.Mapping[tp.Any, tp.Any],
+            tp.Callable[[tp.Any], tp.Any]
+        ]
+    ) -> xr.DataArray:
+        if callable(mapper):
+            return np.vectorize(mapper)(arr)
+        else:
+            return np.vectorize(mapper.__getitem__)(arr)
+    ###END def staticmethod XrTrafoUtils._map_xr_values
+
+    def map_values(
+        self,
+        mapper: tp.Union[
+            tp.Mapping[tp.Any, tp.Any],
+            tp.Callable[[tp.Any], tp.Any]
+        ] = None,
+        **kwargs
+    ) -> xr.DataArray:
+        """Map values in an Xarray DataArray.
+        
+        Parameters
+        ----------
+        mapper : mapping of mappings or callables
+            Dict or other mapping from existing values to new values. If a
+            callable, it must accept a single value and return the
+            corresponding mapped value. It will be called on every element
+            of the DataArray (using `numpy.vectorize`).
+        **kwargs
+            Keyword form of `mapper`. Only works for string values that are
+            valid keyword names. Will raise an error if `mapper` is also
+            provided.
+
+        Returns
+        -------
+        xarray.DataArray
+            New DataArray with mapped values.
+        """
+        _xrobj: xr.DataArray = self._xrobj
+        if mapper:
+            if kwargs:
+                raise ValueError(
+                    'Only one of `mapper` and `kwargs` can be specified.'
+                )
+        else:
+            if not kwargs:
+                raise ValueError(
+                    'Either `mapper` or `kwargs` must be specified.'
+                )
+        if kwargs:
+            mapper = kwargs
+        return self._map_xr_values(
+            arr=_xrobj,
+            mapper=mapper
+        )
+    ###END def XrTrafoUtils.map_values
+
+    def map_coords(
+        self,
+        mapper: tp.Mapping[
+            str,
+            tp.Union[
+                tp.Mapping[tp.Any, tp.Any],
+                tp.Callable[[tp.Any], tp.Any]
+            ]
+        ] = None,
+        **kwargs
+    ) -> tp.Union[xr.Dataset, xr.DataArray]:
+        """Map coordinate values in an xarray DataArray.
+        
+        Can also map both coordinate and data variable values in an xarray
+        Dataset.
+        
+        Parameters
+        ----------
+        mapper : mapping of str to mappings or callables
+            Dict or other mapping with coordinate/variable names as keys and
+            mappings or callables as values. The mapping/callable values must
+            be either dicts/mappings with existing values as keys and new
+            values as values, or callables that accept each existing value as
+            a single parameter and return the corresponding mapped value.
+        **kwargs
+            They keyword argument form of `mapper`. Only one of `mapper` or
+            `kwargs` must be specified, or a `ValueError` will be raised.
+
+        Returns
+        -------
+        xarray.Dataset or xarray.DataArray
+            Dataset or DataArray with mapped coordinate/variable values.
+        """
+        _xrobj: xr.DataArray = self._xrobj
+        if mapper:
+            if kwargs:
+                raise ValueError(
+                    'Only one of `mapper` and `kwargs` can be specified.'
+                )
+        else:
+            if not kwargs:
+                raise ValueError(
+                    'Either `mapper` or `kwargs` must be specified.'
+                )
+        if kwargs:
+            mapper = kwargs
+        for _varname, _mapping in mapper.items():
+            _xrobj[_varname] = self._map_xr_values(
+                arr=_xrobj[_varname],
+                mapper=_mapping
+            )
+    ###END def XrTrafoUtils.map_coords
+
+###END class XrTrafoUtils
+
+
 def _get_regfuncs(
     xrtype: tp.Literal['Dataset', 'DataArray', 'both'] = 'both'
 ) -> tp.List[tp.Callable[[str], tp.Callable]]:
@@ -504,3 +631,18 @@ def register_extsel(
     """
     register_accessor(name=name, accessor_cls=XrExtsel, xrtype=xrtype)
 ###END def register_extsel
+
+def register_trafoutils(
+    name: str = 'trafoutils',
+    xrtype: tp.Literal['Dataset', 'DataArray', 'both'] = 'both'
+):
+    """Register XrTrafoUtils as xarray accessor `trafoutils`.
+    
+    Parameters
+    ----------
+    name : str, optional
+        Name to give to the accessor. Optional, `'trafoutils'` by default
+    xrtype : str, optional
+        What xarray object type to register the accessor for. Can be
+        `'Dataset'`, `'DataArray'` or `'both'`. Optional, `'both'` by default.
+    """
