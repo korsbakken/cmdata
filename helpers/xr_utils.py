@@ -409,12 +409,25 @@ class XrTrafoUtils:
         mapper: tp.Union[
             tp.Mapping[tp.Any, tp.Any],
             tp.Callable[[tp.Any], tp.Any]
-        ]
+        ],
+        on_missing: tp.Literal['raise', 'default', 'ignore'] = 'ignore',
+        default: tp.Any = np.nan
     ) -> xr.DataArray:
-        if callable(mapper):
-            return np.vectorize(mapper)(arr)
+        _usemap: tp.Callable[[tp.Any], tp.Any]
+        if not callable(mapper):
+            if on_missing == 'raise':
+                _usemap = mapper.__getitem__
+            elif on_missing == 'default':
+                _usemap = lambda x: mapper.get(x, default)
+            elif on_missing == 'ignore':
+                _usemap = lambda x: mapper.get(x, x)
+            else:
+                raise ValueError(
+                    '`on_missing` must be "raise", "default", or "ignore".'
+                )
         else:
-            return np.vectorize(mapper.__getitem__)(arr)
+            _usemap = mapper
+        return np.vectorize(_usemap)(arr)
     ###END def staticmethod XrTrafoUtils._map_xr_values
 
     def map_values(
@@ -423,6 +436,8 @@ class XrTrafoUtils:
             tp.Mapping[tp.Any, tp.Any],
             tp.Callable[[tp.Any], tp.Any]
         ] = None,
+        on_missing: tp.Literal['raise', 'default', 'ignore'] = 'ignore',
+        default_val: tp.Any = np.nan,
         **kwargs
     ) -> xr.DataArray:
         """Map values in an Xarray DataArray.
@@ -434,6 +449,15 @@ class XrTrafoUtils:
             callable, it must accept a single value and return the
             corresponding mapped value. It will be called on every element
             of the DataArray (using `numpy.vectorize`).
+        on_missing : str
+            What to do with missing keys when `mapper` is a dict and does not
+            contain all values in the xarray object as keys. Valid values:
+                * `'raise'`: Raise a `KeyError`.
+                * `'default'`: Use a default value (given by `default_val`).
+                * `'ignore'` (default): Retain the original value.
+        default_val : any
+            The default value to use if `mapper` is a dict, a given value is
+            not present as a key in `mapper`, and `on_missing == 'ignore'`.
         **kwargs
             Keyword form of `mapper`. Only works for string values that are
             valid keyword names. Will raise an error if `mapper` is also
@@ -459,19 +483,23 @@ class XrTrafoUtils:
             mapper = kwargs
         return self._map_xr_values(
             arr=_xrobj,
-            mapper=mapper
+            mapper=mapper,
+            on_missing=on_missing,
+            default=default_val
         )
     ###END def XrTrafoUtils.map_values
 
     def map_coords(
         self,
-        mapper: tp.Mapping[
+        mappers: tp.Mapping[
             str,
             tp.Union[
                 tp.Mapping[tp.Any, tp.Any],
                 tp.Callable[[tp.Any], tp.Any]
             ]
         ] = None,
+        on_missing: tp.Literal['raise', 'default', 'ignore'] = 'ignore',
+        default_val: tp.Any = np.nan,
         **kwargs
     ) -> tp.Union[xr.Dataset, xr.DataArray]:
         """Map coordinate values in an xarray DataArray.
@@ -481,12 +509,18 @@ class XrTrafoUtils:
         
         Parameters
         ----------
-        mapper : mapping of str to mappings or callables
+        mappers : mapping of str to mappings or callables
             Dict or other mapping with coordinate/variable names as keys and
-            mappings or callables as values. The mapping/callable values must
-            be either dicts/mappings with existing values as keys and new
-            values as values, or callables that accept each existing value as
-            a single parameter and return the corresponding mapped value.
+            mappings or callables as values. The mapping/callable values must be
+            either dicts/mappings with existing values as keys and new values as
+            values, or callables that accept each existing value as a single
+            parameter and return the corresponding mapped value.
+        on_missing : str
+            What to do if mappers are dicts and do not contain all the values of
+            the array they act on as keys. See documentation of `map_values`.
+        default_val : any
+            Default value to use if `on_missing == 'ignore'`. See documentation
+            of `map_values`.
         **kwargs
             They keyword argument form of `mapper`. Only one of `mapper` or
             `kwargs` must be specified, or a `ValueError` will be raised.
@@ -496,11 +530,11 @@ class XrTrafoUtils:
         xarray.Dataset or xarray.DataArray
             Dataset or DataArray with mapped coordinate/variable values.
         """
-        _xrobj: xr.DataArray = self._xrobj
-        if mapper:
+        _xrobj: xr.DataArray = self._xrobj.copy(deep=False)
+        if mappers:
             if kwargs:
                 raise ValueError(
-                    'Only one of `mapper` and `kwargs` can be specified.'
+                    'Only one of `mappers` and `kwargs` can be specified.'
                 )
         else:
             if not kwargs:
@@ -508,12 +542,15 @@ class XrTrafoUtils:
                     'Either `mapper` or `kwargs` must be specified.'
                 )
         if kwargs:
-            mapper = kwargs
-        for _varname, _mapping in mapper.items():
+            mappers = kwargs
+        for _varname, _mapping in mappers.items():
             _xrobj[_varname] = self._map_xr_values(
                 arr=_xrobj[_varname],
-                mapper=_mapping
+                mapper=_mapping,
+                on_missing=on_missing,
+                default=default_val
             )
+        return _xrobj
     ###END def XrTrafoUtils.map_coords
 
 ###END class XrTrafoUtils
@@ -646,3 +683,5 @@ def register_trafoutils(
         What xarray object type to register the accessor for. Can be
         `'Dataset'`, `'DataArray'` or `'both'`. Optional, `'both'` by default.
     """
+    register_accessor(name=name, accessor_cls=XrTrafoUtils, xrtype=xrtype)
+###END def register_trafoutils
