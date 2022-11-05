@@ -1,9 +1,8 @@
 # Labels and hierarchy for IEA world energy balances (not extended)
 %YAML 1.2
 ---
-flow_hierarchy:
+product_hierarchy:
   orient: "columns"
   columns: ["level", "parent", "long_name"]
-  ordered: true
-  data:
-    long_name:
+  # Note that the "parent" names here denote what the corresponding products
+  # are labeled as in the 

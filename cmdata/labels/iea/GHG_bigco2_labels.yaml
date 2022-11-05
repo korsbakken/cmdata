@@ -147,3 +147,14 @@ flow_hierarchy:
       AVBUNK: "Memo: International aviation bunkers"
       TFC: "Memo: Total final consumption"
       ELECHEAT: "Memo: Electricity and heat production"
+
+product_wbal_hierarchy:
+  orient: "columns"
+  columns: ["level", "parent", "long_name"]
+  ordered: true
+  # NB! This is not a hierarchy of products in the BIGCO2 dataset (mostly), but
+  # rather a correspondence of which product in WEB_wbal each product belongs
+  # under, as well as a hierarchy of the products in WEB_wbal.
+  data:
+    level:
+      
