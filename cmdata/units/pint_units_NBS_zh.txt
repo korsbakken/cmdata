@@ -1,0 +1,20 @@
+# This file contains convenience definitions for using Chinese units with the
+# Python pint package. It is initially intended for converting units found in
+# NBS statistics files.
+吨 = 1e3 * kg
+立方米 = m**3
+bcm = 1e9 * m**3
+千瓦时 = kWh
+万- = 1e4
+亿- = 1e8
+
+# Define a context for converting between volume, mass and energy for natural
+# gas
+@context(voldens=0.72463768115) natgas
+    # voldens = volumetric density, in kg/m**3. Default value from NBS energy
+    # production stats (see, e.g.,
+    # http://www.stats.gov.cn/tjsj/zxfb/202209/t20220916_1888304.html), which
+    # states the density used as 1 tonne = 1380 cubic meters.
+    [length]**3 -> [mass]: voldens * kg / m**3 * value
+    [mass] -> [length]**3: value / voldens * m**3 / kg
+@end

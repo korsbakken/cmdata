@@ -1,0 +1,52 @@
+# Defines basic codes to be used for labels in various areas.
+# The keys in these dictionaries are the basic codes to be used, and the
+# values are free-form explanations of what each code stands for. Each group
+# name denotes the topical area in which the labels are used.
+
+%YAML 1.2
+---
+
+energy_prodcts:
+  # For energy products, defined as being products that can be accounted for
+  # in energy units and that can appear in energy balances.
+  NATGAS: "Natural gas (in general)"
+  OIL: "Oil (in general, by default crude)"
+  CRUDEOIL: "Crude oil"
+  OILPRODS: "Refined petroleum products, in general"
+  COAL: "Coal (in general, but not including gases and other derived products)"
+  TOTCOAL: "Coal and coal-derived products, including coke and gases."
+  COKE: "Coke, produced from coal (i.e., not petroleum coke or biocoke)."
+  ELEC: "Electricity, regardless of source"
+
+---
+
+industry_products:
+  # Industry products. Also includes energy products, considered as products
+  # from energy extraction industries, or as import/export commodities.
+  NATGAS: "Natural gas (in general)"
+  OIL: "Oil (in general, by default crude)"
+  CRUDEOIL: "Crude oil"
+  OILPRODS: "Refined petroleum products, in general"
+  OIL_REFIN_INPUT: "Crude oil input to refineries"
+  COAL: "Coal (in general, but not including gases and other derived products)"
+  RAWCOAL: "Raw coal, not processed (typically total production of coal directly from mines)."
+  COALBEDGAS: "Coal bed gas (gas from coal mines)"
+  TOTCOAL: "Coal and coal-derived products, including coke and gases."
+  COKE: "Coke, produced from coal (i.e., not petroleum coke or biocoke)."
+  CEMENT: "Cement. Generally refers to produced cement, not just clinker."
+  CRUDE_STEEL: "Crude steel"
+  PIGIRON: "Pig iron"
+  ELEC_TOTAL: "Total electricity production, irrespective of source."
+  ELEC_THERM: "Electricity from thermal power plants (coal, natural gas, etc."
+  ELEC_HYDRO: "Hydro electricity"
+
+---
+
+monthly_measures:
+  # Measures for monthly statistics, such as whether the numbers denote
+  # in-month production, cumulative production since the start of the year,
+  # year-on-year same-month growth, or year-on-year cumulative growth.
+  MONTHVOL: "Volume in given month"
+  CUMVOL: "Cumulative volume from start of year through given month"
+  YOYMONTHGROWTH: "Year-on-year growth for given month"
+  YOYCUMGROWTH: "Year-on-year cumulative growth (January through given month compared to same period previous year)"

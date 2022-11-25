@@ -1,0 +1,160 @@
+# Labels and hierarchy for IEA extended CO2 emissions from fuel combustion dataset
+%YAML 1.2
+---
+flow_hierarchy:
+  orient: "columns"
+  columns: ["level", "parent", "long_name"]
+  ordered: true
+  data:
+    level:
+      # Level 99 denotes memos, not to be summed up with anything
+      # Note that in the IEA documentation, TFC and ELECHEAT are defined as
+      # memos. However, in practice they are in fact (as far as I understand
+      # the documentation, and have verfied through a quick check) equal to the
+      # sum of all final consumption emissions (excl. electricity/heat and
+      # energy industry own use), and sum of MAINPROD+AUTOPROD, resepectively.
+      # Also, TFC+ELECHEAT+OTHEN appears to sum up to CO2FCOMB. So logically,
+      # TFC and ELECHEAT should be main flows at the level directly below
+      # CO2FCOMB (along with OTHEN), while the final consumption flows and
+      # electricity/heat generation flows should be at the level below them
+      # and have them as parents. Hence, TFC, ELECHEAT and OTHEN are at level
+      # 2 below, and not 99.
+      CO2FCOMB: 1
+      MAINPROD: 3
+      MAINELEC: 4
+      MAINCHP: 4
+      MAINHEAT: 4
+      EPOWERPLT: 4
+      AUTOPROD: 3
+      AUTOELEC: 4
+      AUTOCHP: 4
+      AUTOHEAT: 4
+      OTHEN: 2
+      TOTIND: 3
+      MINING: 4
+      CONSTRUC: 4
+      MANUFACT: 4
+      IRONSTL: 5
+      CHEMICAL: 5
+      NONFERR: 5
+      NONMET: 5
+      TRANSEQ: 5
+      MACHINE: 5
+      FOODPRO: 5
+      PAPERPRO: 5
+      WOODPRO: 5
+      TEXTILES: 5
+      INONSPEC: 4
+      TOTTRANS: 3
+      ROAD: 4
+      DOMESAIR: 4
+      RAIL: 4
+      PIPELINE: 4
+      DOMESNAV: 4
+      TRNONSPE: 4
+      RESIDENT: 3
+      COMMPUB: 3
+      AGRICULT: 3
+      FISHING: 3
+      ONONSPEC: 3
+      MARBUNK: 99
+      AVBUNK: 99
+      TFC: 2
+      ELECHEAT: 2
+    parent:
+      CO2FCOMB: ""
+      MAINPROD: "ELECHEAT"
+      MAINELEC: "MAINPROD"
+      MAINCHP: "MAINPROD"
+      MAINHEAT: "MAINPROD"
+      EPOWERPLT: "MAINPROD"
+      AUTOPROD: "ELECHEAT"
+      AUTOELEC: "AUTOPROD"
+      AUTOCHP: "AUTOPROD"
+      AUTOHEAT: "AUTOPROD"
+      OTHEN: "CO2FCOMB"
+      TOTIND: "TFC"
+      MINING: "TOTIND"
+      CONSTRUC: "TOTIND"
+      MANUFACT: "TOTIND"
+      IRONSTL: "MANUFACT"
+      CHEMICAL: "MANUFACT"
+      NONFERR: "MANUFACT"
+      NONMET: "MANUFACT"
+      TRANSEQ: "MANUFACT"
+      MACHINE: "MANUFACT"
+      FOODPRO: "MANUFACT"
+      PAPERPRO: "MANUFACT"
+      WOODPRO: "MANUFACT"
+      TEXTILES: "MANUFACT"
+      INONSPEC: "TOTIND"
+      TOTTRANS: "TFC"
+      ROAD: "TOTTRANS"
+      DOMESAIR: "TOTTRANS"
+      RAIL: "TOTTRANS"
+      PIPELINE: "TOTTRANS"
+      DOMESNAV: "TOTTRANS"
+      TRNONSPE: "TOTTRANS"
+      RESIDENT: "TFC"
+      COMMPUB: "TFC"
+      AGRICULT: "TFC"
+      FISHING: "TFC"
+      ONONSPEC: "TFC"
+      MARBUNK: "MEMO_TOTTRANS"
+      AVBUNK: "MEMO_TOTTRANS"
+      TFC: "CO2FCOMB"
+      ELECHEAT: "CO2FCOMB"
+    long_name:
+      CO2FCOMB: "CO2 fuel combustion"
+      MAINPROD: "Main activity electricity and heat production"
+      MAINELEC: "Main activity electricity plants"
+      MAINCHP: "Main activity CHP plants"
+      MAINHEAT: "Main activity heat plants"
+      EPOWERPLT: "Own use in electricity, CHP and heat plants"
+      AUTOPROD: "Unallocated autoproducers"
+      AUTOELEC: "Autoproducer electricity plants"
+      AUTOCHP: "Autoproducer CHP plants"
+      AUTOHEAT: "Autoproducer heat plants"
+      OTHEN: "Other energy industry own use"
+      TOTIND: "Manufacturing industries and construction"
+      MINING: " Mining and quarrying"
+      CONSTRUC: " Construction"
+      MANUFACT: " Manufacturing"
+      IRONSTL: "  Iron and steel"
+      CHEMICAL: "  Chemical and petrochemical"
+      NONFERR: "  Non-ferrous metals"
+      NONMET: "  Non-metallic minerals"
+      TRANSEQ: "  Transport equipment"
+      MACHINE: "  Machinery"
+      FOODPRO: "  Food and tobacco"
+      PAPERPRO: "  Paper, pulp and printing"
+      WOODPRO: "  Wood and wood products"
+      TEXTILES: "  Textile and leather"
+      INONSPEC: " Industry not elsewhere specified"
+      TOTTRANS: "Transport"
+      ROAD: " Road"
+      DOMESAIR: " Domestic aviation"
+      RAIL: " Rail"
+      PIPELINE: " Pipeline transport"
+      DOMESNAV: " Domestic navigation"
+      TRNONSPE: " Transport not elsewhere specified"
+      RESIDENT: "Residential"
+      COMMPUB: "Commercial and public services"
+      AGRICULT: "Agriculture\/forestry"
+      FISHING: "Fishing"
+      ONONSPEC: "Final consumption not elsewhere specified"
+      MARBUNK: "Memo: International marine bunkers"
+      AVBUNK: "Memo: International aviation bunkers"
+      TFC: "Memo: Total final consumption"
+      ELECHEAT: "Memo: Electricity and heat production"
+
+product_wbal_hierarchy:
+  orient: "columns"
+  columns: ["level", "parent", "long_name"]
+  ordered: true
+  # NB! This is not a hierarchy of products in the BIGCO2 dataset (mostly), but
+  # rather a correspondence of which product in WEB_wbal each product belongs
+  # under, as well as a hierarchy of the products in WEB_wbal.
+  data:
+    level:
+      
