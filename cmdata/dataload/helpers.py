@@ -11,6 +11,7 @@ import numpy.typing as nptyping
 
 
 DC = tp.TypeVar('DC')
+tp.dataclass_transform
 def dictify_dataclass(_class: DC) -> DC:
     """Adds dict access methods to a dataclass.
     
