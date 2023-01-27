@@ -5,6 +5,7 @@ import typing as tp
 import enum
 from pathlib import Path
 from abc import ABC, abstractmethod, abstractproperty
+import functools
 
 import pandas as pd
 
@@ -374,7 +375,130 @@ class DataLoader(ABC):
         pass
     ###END def abstractmethod DataLoader.read_raw_datafiles
 
+    @abstractmethod
+    def get_data(
+        self,
+        data_config: tp.Optional[DataConfig] = None,
+        data_repr: tp.Optional[DataReprType] = None,
+        **kwargs
+    ) -> tp.Any:
+        """Get a (processed) data set.
+        
+        This method is an abstract method to be implemented by subclasses. It
+        should return a processed data set (not raw data) in one of the types
+        listed in the `DataReprType` enum.
+
+        The method can be called by subclasses with `data_config` and
+        `data_repr` (other keyword arguments will be ignored). The method will
+        check that both are the correct data type. However, the calling
+        subclass method will itself have to initialize both if they are None,
+        any initialization cannot be passed back to the caller.
+        
+        Parameters
+        ----------
+        data_config : DataConfig, optional
+            Configuration object. Implementing methods in subclasses should
+            set it to `self.data_config` if it is None.
+        data_repr : DataReprType, optional
+            Which data representation to return. Implementing methods in
+            subclasses should define a default type, or enforce just one type
+            if multiple types are not available and raise an error or a warning
+            if other types are specified.
+
+        Returns
+        -------
+        Data structure of the type specified by `data_repr`.
+        """
+        if not isinstance(data_config, DataConfig):
+            raise TypeError('`data_config` must be a `DataConfig` instance.')
+        if not isinstance(data_repr, DataReprType):
+            raise TypeError('`data_repr` must be a `DataReprType` enum value.')
+    ###END def abstractmethod DataLoader.get_data
+
 ###END class DataLoader
+
+
+class ProcessedDataLoader(DataLoader, ABC):
+    """`DataLoader` subclass for loading only processed data.
+    
+    This class implements trivial methods for the methods in `DataLoader` that
+    load or process raw data files, so that subclasses only need to implement
+    methods dealing with processed data files and processed data structures in
+    order to become instantiateable non-abstract classes. Each of the trivial
+    methods will raise a `NotImplementedError` if called."""
+
+    @property
+    def data_processor(self) -> \
+            tp.Union[tp.Mapping[DataReprType, tp.Callable], tp.Callable]:
+        raise NotImplementedError(
+            'Methods/properties related to raw data are not defined for class '
+            '`ProcessedDataLoader`.'
+        )
+    ###END def property ProcessedDataLoader.data_processor
+
+    @functools.wraps(DataLoader.__init__)
+    def __init__(
+        self,
+        data_config: tp.Optional[tp.Union[DataConfig, Path]] = None,
+        data_config_str: tp.Optional[str] = None
+    ):
+        super().__init__(
+            data_config=data_config,
+            data_config_str=data_config_str
+        )
+    ###END def ProcessedDataLoader.__init__
+
+    def load_raw_dataset(
+        self,
+        data_config: tp.Optional[DataConfig] = None,
+        cache_processed_data: bool = True,
+        file_getter_kwargs: tp.Optional[tp.Dict[str, tp.Any]] = None,
+        data_processor_kwargs: tp.Optional[tp.Dict[str, tp.Any]] = None, 
+        data_repr: tp.Optional[DataReprType] = None,
+        **kwargs
+    ) -> tp.Any:
+        """Not valid for `ProcessedDataLoader`.
+
+        Will raise `NotImplementedError` if called.
+        """
+        raise NotImplementedError(
+            'Methods/properties related to raw data are not defined for class '
+            '`ProcessedDataLoader`.'
+        )
+    ###END def ProcessedDataLoader.load_raw_dataset
+
+    def get_raw_datafile_paths(
+        self,
+        data_config: tp.Optional[DataConfig] = None,
+        **kwargs
+    ) -> tp.Union[Path, tp.Sequence[Path]]:
+        """Not valid for `ProcessedDataLoader`.
+
+        Will raise `NotImplementedError` if called.
+        """
+        raise NotImplementedError(
+            'Methods/properties related to raw data are not defined for class '
+            '`ProcessedDataLoader`.'
+        )
+    ###END def ProcessedDataLoader.get_raw_datafile_paths
+
+    def read_raw_datafiles(
+        self,
+        datafiles: tp.Union[Path, tp.Sequence[Path]],
+        data_config: tp.Optional[DataConfig] = None
+    ) -> tp.Any:
+        """Not valid for `ProcessedDataLoader`.
+
+        Will raise `NotImplementedError` if called.
+        """
+        raise NotImplementedError(
+            'Methods/properties related to raw data are not defined for class '
+            '`ProcessedDataLoader`.'
+        )
+    ###END def ProcessedDataLoader.read_raw_datafiles
+
+###END class ProcessedDataLoader
+
 
 def set_nonna_if_not_present(
     obj: tp.Any,
