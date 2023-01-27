@@ -13,6 +13,7 @@ energy_prodcts:
   OIL: "Oil (in general, by default crude)"
   CRUDEOIL: "Crude oil"
   OILPRODS: "Refined petroleum products, in general"
+  TOTOIL: "Total of crude oil and petroleum products"
   COAL: "Coal (in general, but not including gases and other derived products)"
   TOTCOAL: "Coal and coal-derived products, including coke and gases."
   COKE: "Coke, produced from coal (i.e., not petroleum coke or biocoke)."

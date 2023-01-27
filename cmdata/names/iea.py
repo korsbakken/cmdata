@@ -15,6 +15,7 @@ class DimNames:
     PRODUCT: str = 'product'
     UNIT: str = 'unit'
     GAS: str = 'gas'
+    ALLOCATION: str = 'allocation'
 ###END class dataclass DimNames
 dim_names: DimNames = DimNames()
     
