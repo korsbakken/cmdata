@@ -76,7 +76,7 @@ def add_hierarchy(
         `'_hierarchy'` will be suffixed to the dimension name(s) in `dim`.
     """
     if dim is None:
-        dim = [DN.FLOW]
+        dim = [DN.FLOW, DN.PRODUCT]
     _dim: str
     if any([not isinstance(_dim, str) for _dim in dim]):
         raise TypeError('All elements in `dim` must be strings.')
