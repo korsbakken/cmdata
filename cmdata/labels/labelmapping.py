@@ -23,7 +23,7 @@ class LabelMap:
     method.
     """
 
-    __slots__ = ('_df', '_code_col_name')
+    __slots__ = ('_df', '_code_col_name', 'name', 'attrs')
     _df: pd.DataFrame
 
     _yaml_meta_keys: tp.Tuple[str, ...] = (
@@ -31,6 +31,9 @@ class LabelMap:
         'orient',
         'columns',
         'ordered',
+        'parent',
+        'parent_file',
+        'hierarchy_level',
         'data'
     )
     """Keys in YAML files that are not part of the data (contains metadata and,
@@ -57,7 +60,9 @@ class LabelMap:
         orient: tp.Literal['index', 'columns'] = 'columns',
         values_dtype: tp.Union[str, type, np.dtype] = 'category',
         index_dtype: tp.Union[str, type, np.dtype] = 'category',
-        code_col_name: str = None
+        code_col_name: tp.Optional[str] = None,
+        name: tp.Optional[tp.Hashable] = None,
+        attrs: tp.Optional[tp.Dict[tp.Hashable, tp.Any]] = None
     ):
         """Initializes an instance with definitions from a dictionary.
         
@@ -76,11 +81,21 @@ class LabelMap:
         index_dtype : str, type, or numpy.dtype, optional
             dtype to use for the index in the internal DataFrame. Opitional, by
             default `'category'`.
-        code_col_name: str, optional
+        code_col_name : str, optional
             Name to use for the index in the internal DataFrame, or code column
             when/if the index is converted into a regular column. Optional,
             defaults to the class attribute `_default_code_col_name` (`'code'`
             in the base class).
+        name : hashable
+            A name to identify the LabelMap. Optional, None by default.
+        attrs : dict, optional
+            Dict with arbitrary attributes, such as metadata or other 
+            information that may be useful for further use. Will be set as
+            `self.attrs`. NB! `attrs` will not be copied, so please make sure
+            to copy it beforehand if you want to avoid having changes
+            back-propagate unintentionally, and also avoid making changes from
+            outside the instance. Optional, by default an empty dict will be
+            set.
         """
         self._df: pd.DataFrame = pd.DataFrame.from_dict(
             data=defdict,
@@ -91,6 +106,13 @@ class LabelMap:
         self._code_col_name: str = code_col_name if code_col_name is not None \
             else self._default_code_col_name
         self._df.index.name = self._code_col_name
+        if attrs is None:
+            self.attrs: tp.Dict[tp.Hashable, tp.Any] = dict()
+        elif isinstance(attrs, tp.Dict):
+            self.attrs = attrs
+        else:
+            raise TypeError('`attrs` must be a dict, or None.')
+        self.name = name
     ###END def LabelMap.__init__
 
     @property
@@ -118,7 +140,8 @@ class LabelMap:
         cls,
         yamlfile: tp.Union[str, Path, tp.TextIO],
         key: tp.Union[tp.Hashable, tp.Sequence[tp.Hashable]] = None,
-        orient: tp.Literal['index', 'columns', None] = None
+        orient: tp.Literal['index', 'columns'] = 'columns',
+        read_attrs: bool = True
     ) -> LabelMap:
         """Constructs a `LabelMap` instance from a YAML file definition.
 
@@ -164,13 +187,20 @@ class LabelMap:
             in order to get nested items, `keys` must not be a hashable
             container, so you should provide a `list`, not a `tuple` or other
             immutable container, or `key` may be interpreted as just a single-
-            level key.
+            level key. `key` will be set as the `name` attribute of the
+            returned `LabelMap` instance.
         orient : `'index'` or `'columns'`
             Orientation to read the YAML file dictionary into a DataFrame. Works
             like the `orient` parameter of `pandas.DataFrame.from_dict`.
             Optional. If not specified, the value will be read from the element
             with key `orient` in the YAML file if a metadata block is present.
             If not, `'index'` is used as the default.
+        read_attrs : bool, optional
+            If True, any key/value pairs found at the top level of the parsed
+            YAML item (i.e., any key/value pairs directly under the item whose
+            name matches `key`) except for `data` itself will be set as items in
+            the `attrs` dict of the returned `LabelMap`. Optional, True by
+            default.
 
         Returns
         -------
@@ -193,11 +223,22 @@ class LabelMap:
                     orient = _def['orient']
                 else:
                     orient = 'index'
-            return cls(_def[cls._yaml_data_key], orient=orient)
+            if read_attrs:
+                attrdict = {
+                    _attrkey: _attrval for _attrkey, _attrval in _def.items()
+                    if _attrkey != cls._yaml_data_key
+                }
+            else:
+                attrdict = None
+            return cls(
+                _def[cls._yaml_data_key],
+                orient=orient,
+                attrs=attrdict,
+                name=key)
         else:
             if orient is None:
                 orient = 'index'
-            return cls(_def, orient=orient)
+            return cls(_def, orient=orient, name=key)
     ###END def classmethod LabelMap.from_yaml
 
     def map_pd(
@@ -364,3 +405,125 @@ class LabelMap:
     ###END def LabelMap.map_pd_index
 
 ###END class LabelMap
+
+
+def chain_dfs(
+    pdobjs: tp.Sequence[tp.Union[pd.DataFrame, pd.Series]],
+    join_on_left: tp.Sequence[tp.Hashable],
+    join_on_right: tp.Sequence[tp.Hashable],
+    keep_indexes: tp.Union[bool, tp.Sequence[bool]] = True,
+    index: tp.Optional[tp.Union[pd.Index, tp.Hashable]] = None
+) -> pd.DataFrame:
+    """Chain together a sequence of DataFrames and/or Series
+    
+    Chain-joins a sequence (rather than just two) DataFrames or Series, on a
+    specified sequence of columns, indexes, index levels, or values (for
+    Series).
+
+    The objects are joined iteratively pairwise, going from left to right in
+    `pdobjs`.
+
+    The function presumes that the indexes or columns to be joined on can be
+    mapped as a many-to-one mapping going from right to left in `pdobjs`, i.e.,
+    that there is a descending hierarchy going from left to right. In most
+    cases, the function should work even if this is not the case, but there may
+    be unintentional side effects and edge cases that have not been tested for.
+
+    The objects do not need to have the same vertical lengths. However, as
+    implied by the hierarchy assumption, there is an assumption that object
+    heights will increase monotonically going from left to right in `pdobjs`.
+
+    The main use of the function is to help create an aggregation hierarchy for
+    xarray or pandas data objects, hence the hierarchy assumption.
+
+    Parameters
+    ----------
+    pdobjs : sequence of pandas.DataFrame and/or pandas.Series instances
+        The objects to be joined together. The merged object will include
+        the elements of `pdobjs` in order from left to right. NB! All Series
+        instances *must* have a non-empty `name` attribute (which will be used
+        as column names in the merged object). Further, any indexes or
+        MultiIndex levels that are to be either joined on or kept, must also
+        have names.
+    join_on_left : sequence
+        Column, index or index level names to join on left for each pairing.
+        The sequence should be specified for each member of `pdobs` except the
+        last one, and should therefore have length equal to `len(pdobjs)-1`.
+    join_on_right : sequence
+        Column, index or index level names to join on right for each pairing.
+        Must be specified for each member of `pdobjs` except the first one, and
+        therefore have length `len(pdobjs)-1`.
+    keep_indexes: bool or sequence of bool, optional
+        Whether to keep the index/index levels of each element in `pdobjs` as
+        columns in the merged object. Should be either a single bool for all
+        elements, or a sequence of the same length as `pdobj` giving the value
+        for each element. Optional, True by default.
+    index : pandas.Index, hashable or sequence, optional
+        What to use as the index for the merged object. Can be either an
+        explicit `pandas.Index` instance with the same length as the tallest
+        member of `pdobjs`, or a column name or sequence of column names of
+        the merged object to be set as index/index levels. Optional, uses the
+        index of the last element of `pdobjs` by default. Note that this will
+        result in an error if the height of the last element is not the same as
+        the height of the merged object (e.g., if the hierarchy assumption
+        mentioned above is not satisfied).
+
+    Returns
+    -------
+    pandas.DataFrame
+    """
+    if len(join_on_left) != len(pdobjs)-1:
+        raise ValueError(
+            '`join_on_left` must have length one less than `pdobjs`.'
+        )
+    if len(join_on_right) != len(pdobjs)-1:
+        raise ValueError(
+            '`join_on_right` must have length one less than `pdobjs`.'
+        )
+    _obj: tp.Union[pd.DataFrame, pd.Series]
+    for _obj in pdobjs:
+        if isinstance(_obj, pd.Series):
+            if not _obj.name:
+                raise AttributeError(
+                    'All `pandas.Series` elements in `pdobj` must have a name.'
+                )
+        elif not isinstance(_obj, pd.DataFrame):
+            raise TypeError(
+                'All elements in `pdobjs` must be DataFrames or Series.'
+            )
+    if isinstance(keep_indexes, bool):
+        keep_indexes = [keep_indexes]*len(pdobjs)
+    # Make a separate list of objects, with reset indexes for the ones whose
+    # indexes are to be kept as columns in the merged object.
+    _obj: tp.Union[pd.DataFrame, pd.Series]
+    _keep_index: bool
+    pdobjs_processing: tp.List[tp.Union[pd.DataFrame, pd.Series]] = [
+        _obj.reset_index() if _keep_index else _obj
+        for _obj, _keep_index in zip(pdobjs, keep_indexes)
+    ]
+    
+    # Start the merging.
+    merged_df: pd.DataFrame
+    if isinstance(pdobjs_processing[0], pd.Series):
+        merged_df = pdobjs_processing[0].to_frame()
+    else:
+        merged_df = pdobjs_processing[0]
+    if keep_indexes[0]:
+        merged_df = merged_df.reset_index()
+    for _rightobj, _left_on, _right_on in zip(
+            pdobjs_processing[1:],
+            join_on_left,
+            join_on_right
+    ):
+        merged_df = pd.merge(
+            left=merged_df,
+            right=_rightobj,
+            how='right',
+            left_on=_left_on,
+            right_on=_right_on
+        )
+    if index is None:
+        index = pdobjs[-1].index
+    merged_df = merged_df.set_index(index)
+    return merged_df
+###END def chain_dfs
