@@ -1,0 +1,100 @@
+# Aggregation of labels for the product dimension in IEA datasets
+%YAML 1.2
+---
+aggregation_levels:
+  # This list of lists states at which level each aggregation occurs. Could be
+  # determined automatically from the aggregation definitions below, but should
+  # be defined here for convenience and readability. Note, however, that if any
+  # changes are made to one line of aggregations, the levels of other
+  # aggregation lines may also need to be updated.
+  - ["major_categories"]
+  - ["categories"]
+  - ["subcategories"]
+
+major_categories:
+  parent: ""
+  labels:
+    - "FOSSIL"
+    - "NONFOSSIL"
+    - "OTHER"
+  long_name:
+    FOSSIL: "Fossil fuels"
+    NONFOSSIL: "Non-fossil energy"
+    OTHER: "Other"
+  parents:
+    FOSSIL: ""
+    NONFOSSIL: ""
+    OTHER: ""
+
+categories':
+  parent: "major_categories"
+  labels:
+    - "TOTCOAL"
+    - "TOTOIL"
+    - "TOTNATGAS"
+    - "RENEWABLE"
+    - "NUCLEAR"
+    - "OTHER"
+  long_name:
+    TOTCOAL: "Coal"
+    TOTOIL: "Petroleum"
+    TOTNATGAS: "Natural gas"
+    RENEWABLE: "Renewables"
+    NUCLEAR: "Nuclear"
+    OTHER: "Other"
+  parents:
+    TOTCOAL: "FOSSIL"
+    TOTOIL: "FOSSIL"
+    TOTNATGAS: "FOSSIL"
+    RENEWABLE: "NONFOSSIL"
+    NUCLEAR:  "NONFOSSIL"
+    OTHER: "OTHER"
+
+subcategories:
+  parent: "categories"
+  labels:
+    - "COAL"
+    - "COKE"
+    - "PEAT"
+    - "COALGASES"
+    - "CRUDEOIL"
+    - "OILPRODUCTS"
+    - "NATGAS"
+    - "HYDRO"
+    - "WIND"
+    - "SOLAR"
+    - "BIO"
+    - "OTHERRENEW"
+    - "NUCLEAR"
+    - "OTHER"
+  long_name:
+    COAL: "Coal"
+    COKE: "Coal coke"
+    PEAT: "Peat"
+    COALGASES: "Coal-derived gases"
+    CRUDEOIL: "Crude oil"
+    OILPRODUCTS: "Petroleum products"
+    NATGAS: "Natural gas"
+    HYDRO: "Hydropower"
+    WIND: "Wind"
+    SOLAR: "Solar"
+    BIO: "Bioenergy"
+    OTHERRENEW: "Other renewables"
+    NUCLEAR: "Nuclear"
+    OTHER: "Other"
+  parents:
+    COAL: "TOTCOAL"
+    COKE: "TOTCOAL"
+    PEAT: "TOTCOAL"
+    COALGASES: "TOTCOAL"
+    CRUDEOIL: "TOTOIL"
+    OILPRODUCTS: "TOTOIL"
+    NATGAS: "TOTNATGAS"
+    HYDRO: "RENEWABLE"
+    WIND: "RENEWABLE"
+    SOLAR: "RENEWABLE"
+    BIO: "RENEWABLE"
+    OTHERRENEW: "RENEWABLE"
+    NUCLEAR: "NUCLEAR"
+    OTHER: "OTHER"
+
