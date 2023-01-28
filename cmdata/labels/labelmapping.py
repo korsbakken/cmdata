@@ -599,11 +599,17 @@ def make_aggreation_labelmap(
             '`aggregation_level_names` must be the same length as `labelmaps`.'
         )
     # Make a list of DataFrames to chain
-    chain_df_list: tp.List[pd.DataFrame] = [
-        _labelmap.get_df()[[_parents_colname, _longname_colname]].copy(deep=False)
-        for _labelmap, _parents_colname, _longname_colname
-        in zip(labelmaps, parents_colnames, longname_colnames)
-    ]
+    chain_df_list: tp.List[pd.DataFrame] = \
+        [labelmaps[0].get_df()[[longname_colnames[0]]]] + \
+            [
+                _labelmap.get_df()[[_parents_colname, _longname_colname]].copy(deep=False)
+                for _labelmap, _parents_colname, _longname_colname
+                in zip(
+                    labelmaps[1:-1],
+                    parents_colnames[1:-1],
+                    longname_colnames[1:-1]
+                )
+            ] + [labelmaps[-1].get_df()[[parents_colnames[-1]]]]
     new_parents_colnames: tp.List[str] = [
         f'{_agg_levelname}{_parents_col_suffix}'
         for _agg_levelname, _parents_col_suffix
@@ -644,5 +650,11 @@ def make_aggreation_labelmap(
         join_on_left=new_code_colnames[:-1],
         join_on_right=new_parents_colnames[1:]
     )
-    return chained_df
+    # Set new DataFrame to be `chained_df` without the parents columns, and use
+    # that to create a new LabelMap.
+    labels_df: pd.DataFrame = chained_df[
+        new_code_colnames[:-1] + new_longname_colnames[:-1]
+    ]
+    agg_labelmap: LabelMap = LabelMap(labels_df)
+    return agg_labelmap
 ###END def make_aggregation_labelmap
