@@ -211,13 +211,13 @@ product_hierarchy:
       ONONSPEC: 2
       INDWASTE: 2
       MUNWASTEN: 2
-      PRIMSBIO: 2
-      BIOGASES: 2
-      BIOGASOL: 2
-      BIODIESEL: 2
-      OBIOLIQ: 2
-      RENEWNS: 2
-      CHARCOAL: 2
+      PRIMSBIO: 99
+      BIOGASES: 99
+      BIOGASOL: 99
+      BIODIESEL: 99
+      OBIOLIQ: 99
+      RENEWNS: 99
+      CHARCOAL: 99
     parent:
       TOTAL: ""
       HARDCOAL: "TOTAL"
@@ -329,3 +329,58 @@ product_hierarchy:
       RENEWNS: "Memo: Non-specified primary biofuels & waste"
       CHARCOAL: "Memo: Charcoal"
 
+product_aggregation:
+  orient: "columns"
+  columns: ["parents"]
+  ordered: true
+  parent: "subcategories"
+  parent_file: "product_aggregations.yaml"
+  hierarchy_level: 2  # What level of labels are used as children under the parent aggregation
+  data:
+    parents:
+      HARDCOAL: "COAL"
+      BROWN: "COAL"
+      ANTCOAL: "COAL"
+      COKCOAL: "COAL"
+      BITCOAL: "COAL"
+      SUBCOAL: "COAL"
+      LIGNITE: "COAL"
+      PATFUEL: "COAL"
+      OVENCOKE: "COKE"
+      GASCOKE: "COKE"
+      COALTAR: "COAL"
+      BKB: "COAL"
+      GASWKSGS: "COALGASES"
+      COKEOVGS: "COALGASES"
+      BLFURGS: "COALGASES"
+      OGASES: "COALGASES"
+      PEAT: "PEAT"
+      PEATPROD: "PEAT"
+      OILSHALE: "CRUDEOIL"
+      NATGAS: "CRUDEOIL"
+      CRNGFEED: "CRUDEOIL"
+      CRUDEOIL: "CRUDEOIL"
+      NGL: "OILPRODUCTS"
+      REFFEEDS: "OILPRODUCTS"
+      ADDITIVE: "OILPRODUCTS"
+      ORIMUL: "OILPRODUCTS"
+      NONCRUDE: "OILPRODUCTS"
+      REFINGAS: "OILPRODUCTS"
+      ETHANE: "OILPRODUCTS"
+      LPG: "OILPRODUCTS"
+      NONBIOGASO: "OILPRODUCTS"
+      AVGAS: "OILPRODUCTS"
+      JETGAS: "OILPRODUCTS"
+      NONBIOJETK: "OILPRODUCTS"
+      OTHKERO: "OILPRODUCTS"
+      NONBIODIES: "OILPRODUCTS"
+      RESFUEL: "OILPRODUCTS"
+      NAPHTHA: "OILPRODUCTS"
+      WHITESP: "OILPRODUCTS"
+      LUBRIC: "OILPRODUCTS"
+      BITUMEN: "OILPRODUCTS"
+      PARWAX: "OILPRODUCTS"
+      PETCOKE: "OILPRODUCTS"
+      ONONSPEC: "OILPRODUCTS"
+      INDWASTE: "OTHER"
+      MUNWASTEN: "OTHER"
