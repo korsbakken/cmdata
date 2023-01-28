@@ -12,89 +12,75 @@ aggregation_levels:
   - ["subcategories"]
 
 major_categories:
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
   parent: ""
-  labels:
-    - "FOSSIL"
-    - "NONFOSSIL"
-    - "OTHER"
-  long_name:
-    FOSSIL: "Fossil fuels"
-    NONFOSSIL: "Non-fossil energy"
-    OTHER: "Other"
-  parents:
-    FOSSIL: ""
-    NONFOSSIL: ""
-    OTHER: ""
+  data:
+    long_name:
+      FOSSIL: "Fossil fuels"
+      NONFOSSIL: "Non-fossil energy"
+      OTHER: "Other"
+    parents:
+      FOSSIL: ""
+      NONFOSSIL: ""
+      OTHER: ""
 
 categories':
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
   parent: "major_categories"
-  labels:
-    - "TOTCOAL"
-    - "TOTOIL"
-    - "TOTNATGAS"
-    - "RENEWABLE"
-    - "NUCLEAR"
-    - "OTHER"
-  long_name:
-    TOTCOAL: "Coal"
-    TOTOIL: "Petroleum"
-    TOTNATGAS: "Natural gas"
-    RENEWABLE: "Renewables"
-    NUCLEAR: "Nuclear"
-    OTHER: "Other"
-  parents:
-    TOTCOAL: "FOSSIL"
-    TOTOIL: "FOSSIL"
-    TOTNATGAS: "FOSSIL"
-    RENEWABLE: "NONFOSSIL"
-    NUCLEAR:  "NONFOSSIL"
-    OTHER: "OTHER"
+  data:
+    long_name:
+      TOTCOAL: "Coal"
+      TOTOIL: "Petroleum"
+      TOTNATGAS: "Natural gas"
+      RENEWABLE: "Renewables"
+      NUCLEAR: "Nuclear"
+      OTHER: "Other"
+    parents:
+      TOTCOAL: "FOSSIL"
+      TOTOIL: "FOSSIL"
+      TOTNATGAS: "FOSSIL"
+      RENEWABLE: "NONFOSSIL"
+      NUCLEAR:  "NONFOSSIL"
+      OTHER: "OTHER"
 
 subcategories:
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
   parent: "categories"
-  labels:
-    - "COAL"
-    - "COKE"
-    - "PEAT"
-    - "COALGASES"
-    - "CRUDEOIL"
-    - "OILPRODUCTS"
-    - "NATGAS"
-    - "HYDRO"
-    - "WIND"
-    - "SOLAR"
-    - "BIO"
-    - "OTHERRENEW"
-    - "NUCLEAR"
-    - "OTHER"
-  long_name:
-    COAL: "Coal"
-    COKE: "Coal coke"
-    PEAT: "Peat"
-    COALGASES: "Coal-derived gases"
-    CRUDEOIL: "Crude oil"
-    OILPRODUCTS: "Petroleum products"
-    NATGAS: "Natural gas"
-    HYDRO: "Hydropower"
-    WIND: "Wind"
-    SOLAR: "Solar"
-    BIO: "Bioenergy"
-    OTHERRENEW: "Other renewables"
-    NUCLEAR: "Nuclear"
-    OTHER: "Other"
-  parents:
-    COAL: "TOTCOAL"
-    COKE: "TOTCOAL"
-    PEAT: "TOTCOAL"
-    COALGASES: "TOTCOAL"
-    CRUDEOIL: "TOTOIL"
-    OILPRODUCTS: "TOTOIL"
-    NATGAS: "TOTNATGAS"
-    HYDRO: "RENEWABLE"
-    WIND: "RENEWABLE"
-    SOLAR: "RENEWABLE"
-    BIO: "RENEWABLE"
-    OTHERRENEW: "RENEWABLE"
-    NUCLEAR: "NUCLEAR"
-    OTHER: "OTHER"
+  data:
+    long_name:
+      COAL: "Coal"
+      COKE: "Coal coke"
+      PEAT: "Peat"
+      COALGASES: "Coal-derived gases"
+      CRUDEOIL: "Crude oil"
+      OILPRODUCTS: "Petroleum products"
+      NATGAS: "Natural gas"
+      HYDRO: "Hydropower"
+      WIND: "Wind"
+      SOLAR: "Solar"
+      BIO: "Bioenergy"
+      OTHERRENEW: "Other renewables"
+      NUCLEAR: "Nuclear"
+      OTHER: "Other"
+    parents:
+      COAL: "TOTCOAL"
+      COKE: "TOTCOAL"
+      PEAT: "TOTCOAL"
+      COALGASES: "TOTCOAL"
+      CRUDEOIL: "TOTOIL"
+      OILPRODUCTS: "TOTOIL"
+      NATGAS: "TOTNATGAS"
+      HYDRO: "RENEWABLE"
+      WIND: "RENEWABLE"
+      SOLAR: "RENEWABLE"
+      BIO: "RENEWABLE"
+      OTHERRENEW: "RENEWABLE"
+      NUCLEAR: "NUCLEAR"
+      OTHER: "OTHER"
 

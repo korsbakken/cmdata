@@ -15,11 +15,18 @@ from . import helpers
 
 
 class FrozenDict(UserDict):
-    def __init__(self, initdict: dict = None, **kwargs):
+    def __init__(
+        self,
+        initdict: tp.Optional[tp.Mapping] = None,
+        copy_initdict: bool = True,
+        **kwargs
+    ):
         if initdict is None:
             initdict = dict()
+        elif copy_initdict:
+            initdict = dict(initdict)
         initdict |= kwargs
-        self.data = initdict.copy()
+        self.data = initdict
     def __setitem__(self, key: tp.Hashable, item: tp.Any) -> None:
         raise AttributeError(
             'FrozenDict does not support setting or altering items.'
@@ -79,7 +86,7 @@ class LabelfileManager:
         self.labelsets = FrozenDict(self.read_labelsets())
     ###END def LabelfileManager.__init__
 
-    def read_labelsets(self) -> tp.Mapping[str, tp.List[str]]:
+    def read_labelsets(self) -> tp.Mapping[str, tp.List[tp.Hashable]]:
         return {
             _key: list(helpers.yaml_utils.read_yaml(_file).keys())
             for _key, _file in self.yamlfiles.items()
