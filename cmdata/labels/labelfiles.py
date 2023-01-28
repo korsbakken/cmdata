@@ -6,36 +6,13 @@ provides the `get_label_map` function to obtain `LabelMap` instances, and the
 
 import typing as tp
 from pathlib import Path
-from collections import UserDict
 
 import pandas as pd
 
 from . import LabelMap
 from . import helpers
 
-
-class FrozenDict(UserDict):
-    def __init__(
-        self,
-        initdict: tp.Optional[tp.Mapping] = None,
-        copy_initdict: bool = True,
-        **kwargs
-    ):
-        if initdict is None:
-            initdict = dict()
-        elif copy_initdict:
-            initdict = dict(initdict)
-        initdict |= kwargs
-        self.data = initdict
-    def __setitem__(self, key: tp.Hashable, item: tp.Any) -> None:
-        raise AttributeError(
-            'FrozenDict does not support setting or altering items.'
-        )
-    def __delitem__(self, key: tp.Hashable) -> None:
-        raise AttributeError(
-            'FrozenDict does not support deleting items.'
-        )
-###END class FrozenDict
+FrozenDict: type = helpers.containers.FrozenDict
 
 
 class LabelfileManager:
