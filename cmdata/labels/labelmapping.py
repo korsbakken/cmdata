@@ -56,7 +56,7 @@ class LabelMap:
 
     def __init__(
         self,
-        defdict: tp.Dict[tp.Hashable, tp.Any],
+        defdict: tp.Union[tp.Dict[tp.Hashable, tp.Any], pd.DataFrame],
         orient: tp.Literal['index', 'columns'] = 'columns',
         values_dtype: tp.Union[str, type, np.dtype] = 'category',
         index_dtype: tp.Union[str, type, np.dtype] = 'category',
@@ -68,19 +68,24 @@ class LabelMap:
         
         Parameters
         ----------
-        defdict : dict
+        defdict : dict or pandas.DataFrame
             Dictionary with label codes as keys and dicts with equal lengths and
             the same keys as values. Will be converted into an internal
-            DataFrame using `pandas.DataFrame.from_dict.
+            DataFrame using `pandas.DataFrame.from_dict. Can also be a
+            ready-made `pandas.DataFrame` instance. In this case, the values of
+            `orient`, `values_dtype`, and `index_dtype` are ignored. The value
+            columns and index of the DataFrame are assumed to already have the
+            correct dtypes.
         orient : `'index'` or `'columns'`, optional
             Orientation of `defdict`. Same as in `pandas.DataFrame.from_dict`.
             Optional, by default `'columns'`.
         values_dtype : str, type, or numpy.dtype, optional
             dtype to use for the values columns in the internal DataFrame.
-            Opitional, by default `'category'`.
+            Ignored if `defdict` is already a DataFrame. Opitional, by default
+            `'category'`.
         index_dtype : str, type, or numpy.dtype, optional
-            dtype to use for the index in the internal DataFrame. Opitional, by
-            default `'category'`.
+            dtype to use for the index in the internal DataFrame. Is ignored if
+            `defdict` is already a DataFrame. Optional, by default `'category'`.
         code_col_name : str, optional
             Name to use for the index in the internal DataFrame, or code column
             when/if the index is converted into a regular column. Optional,
@@ -89,20 +94,23 @@ class LabelMap:
         name : hashable
             A name to identify the LabelMap. Optional, None by default.
         attrs : dict, optional
-            Dict with arbitrary attributes, such as metadata or other 
+            Dict with arbitrary attributes, such as metadata or other
             information that may be useful for further use. Will be set as
-            `self.attrs`. NB! `attrs` will not be copied, so please make sure
-            to copy it beforehand if you want to avoid having changes
+            `self.attrs`. NB! `attrs` will not be copied, so please make sure to
+            copy it beforehand if you want to avoid having changes
             back-propagate unintentionally, and also avoid making changes from
             outside the instance. Optional, by default an empty dict will be
             set.
         """
-        self._df: pd.DataFrame = pd.DataFrame.from_dict(
-            data=defdict,
-            orient=orient,
-            dtype=values_dtype
-        )
-        self._df.index = self._df.index.astype(index_dtype)
+        if isinstance(defdict, pd.DataFrame):
+            self._df = defdict.copy(deep=False)
+        else:
+            self._df: pd.DataFrame = pd.DataFrame.from_dict(
+                data=defdict,
+                orient=orient,
+                dtype=values_dtype
+            )
+            self._df.index = self._df.index.astype(index_dtype)
         self._code_col_name: str = code_col_name if code_col_name is not None \
             else self._default_code_col_name
         self._df.index.name = self._code_col_name
@@ -508,8 +516,6 @@ def chain_dfs(
         merged_df = pdobjs_processing[0].to_frame()
     else:
         merged_df = pdobjs_processing[0]
-    if keep_indexes[0]:
-        merged_df = merged_df.reset_index()
     for _rightobj, _left_on, _right_on in zip(
             pdobjs_processing[1:],
             join_on_left,
@@ -527,3 +533,116 @@ def chain_dfs(
     merged_df = merged_df.set_index(index)
     return merged_df
 ###END def chain_dfs
+
+XType = tp.TypeVar('XType')
+def _listify_scalar(
+    x: tp.Union[XType, tp.Sequence[XType]],
+    length: int
+) -> tp.List[XType]:
+    if isinstance(x, str):
+        return tp.cast(tp.List[XType], [x]*int(length))
+    else:
+        x = tp.cast(tp.Sequence[XType], x)
+        return list(x)
+###END def _listify_scalar
+
+def make_aggreation_labelmap(
+    labelmaps: tp.Sequence[LabelMap],
+    parents_colnames: tp.Union[tp.Hashable, tp.Sequence[tp.Hashable]] \
+        = 'parents',
+    longname_colnames: tp.Union[tp.Hashable, tp.Sequence[tp.Hashable]] \
+        = 'long_name',
+    aggregation_level_names: tp.Optional[tp.Sequence[str]] = None,
+    code_col_suffix: tp.Union[str, tp.Sequence[str]] = '_code',
+    longname_col_suffix: tp.Union[str, tp.Sequence[str]] = '_long_name',
+    parents_col_suffix: tp.Union[str, tp.Sequence[str]] = '_parents'
+) -> LabelMap:
+    """Chain together LabelMaps to make a LabelMap for aggregation.
+    
+    Takes a sequence of LabelMaps created from aggregation maps chains them
+    together into a single LabelMap object, indexed by the codes of the
+    lowermost LabelMap, and with codes and long names for each of the higher
+    aggregation levels.
+    """
+    # Check that `labelmaps` contains only labelmaps
+    _labelmap: LabelMap
+    if not isinstance(labelmaps, tp.Sequence) or any(
+        [
+            not isinstance(_labelmap, LabelMap) for _labelmap in labelmaps
+        ]
+    ):
+        raise TypeError(
+            '`labelmaps` must be a sequence of LabelMap instances.'
+        )
+    # If the per-level arguments are scalars, turn them into lists
+    parents_colnames = _listify_scalar(parents_colnames,
+                                       length=len(labelmaps))
+    longname_colnames = _listify_scalar(longname_colnames,
+                                       length=len(labelmaps))
+    code_col_suffix = _listify_scalar(code_col_suffix,
+                                       length=len(labelmaps))
+    longname_col_suffix = _listify_scalar(longname_col_suffix,
+                                       length=len(labelmaps))
+    parents_col_suffix = _listify_scalar(parents_col_suffix,
+                                       length=len(labelmaps))
+    # Make a list of aggregation level names if not already given
+    if aggregation_level_names is None:
+        aggregation_level_names = [
+            str(_labelmap.name) for _labelmap in labelmaps
+        ]
+    if not isinstance(aggregation_level_names, tp.Sequence):
+        raise TypeError(
+            '`aggregation_level_names` must be a sequence of names.'
+        )
+    elif len(aggregation_level_names) != len(labelmaps):
+        raise ValueError(
+            '`aggregation_level_names` must be the same length as `labelmaps`.'
+        )
+    # Make a list of DataFrames to chain
+    chain_df_list: tp.List[pd.DataFrame] = [
+        _labelmap.get_df()[[_parents_colname, _longname_colname]].copy(deep=False)
+        for _labelmap, _parents_colname, _longname_colname
+        in zip(labelmaps, parents_colnames, longname_colnames)
+    ]
+    new_parents_colnames: tp.List[str] = [
+        f'{_agg_levelname}{_parents_col_suffix}'
+        for _agg_levelname, _parents_col_suffix
+        in zip(aggregation_level_names, parents_col_suffix)
+    ]
+    new_longname_colnames: tp.List[str] = [
+        f'{_agg_levelname}{_longname_col_suffix}'
+        for _agg_levelname, _longname_col_suffix
+        in zip(aggregation_level_names, longname_col_suffix)
+    ]
+    new_code_colnames: tp.List[str] = [
+        f'{_agg_levelname}{_code_col_suffix}'
+        for _agg_levelname, _code_col_suffix
+        in zip(aggregation_level_names, code_col_suffix)
+    ]
+    # Extract the parents and long_name columns only, set the indexes to be
+    # code columns, set all the names with suffixes
+    _df: pd.DataFrame
+    for _df, _parents_colname, _longname_colname, _new_parents_colname,  \
+            _new_longname_colname, _new_code_colname in zip(
+                chain_df_list,
+                parents_colnames,
+                longname_colnames,
+                new_parents_colnames,
+                new_longname_colnames,
+                new_code_colnames
+            ):
+        _df.rename(
+            columns={
+                _parents_colname: _new_parents_colname,
+                _longname_colname: _new_longname_colname
+            },
+            inplace=True
+        )
+        _df.index.name = _new_code_colname
+    chained_df: pd.DataFrame = chain_dfs(
+        pdobjs=chain_df_list,
+        join_on_left=new_code_colnames[:-1],
+        join_on_right=new_parents_colnames[1:]
+    )
+    return chained_df
+###END def make_aggregation_labelmap
