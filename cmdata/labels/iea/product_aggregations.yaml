@@ -26,7 +26,7 @@ major_categories:
       NONFOSSIL: ""
       OTHER: ""
 
-categories':
+categories:
   orient: "columns"
   columns: ["long_name", "parents"]
   ordered: true
