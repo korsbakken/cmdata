@@ -114,3 +114,50 @@ def add_hierarchy(
         )
     return xrobj
 ###END def add_hierarchy
+
+XR = tp.TypeVar('XR', xr.Dataset, xr.DataArray)
+def add_aggregation_mapping(
+    xrobj: XR,
+    labelmap: iealabels.LabelMap,
+    dim: str,
+    add_dim_prefix: bool = True
+) -> XR:
+    """Adds aggregation variables to Dataset or DataArray
+    
+    Parameters
+    ----------
+    xrobj : xarray.Dataset or xarray.DataArray
+        The xarray object to add aggregation coordinates to
+    labelmap : cmdata.labels.LabelMap
+        LabelMap instance with the aggregation labels. `labelmap` must have the
+        same format that is returned by
+        `cmdata.labels.labelmapping.make_aggregation_labelmap`. Each column in
+        the DataFrame of `labelmap` will simply be added to `xrobj` as a
+        coordinate, but with the column names prefixed by the dimension name
+        (given by `dim`).
+    dim : str
+        The dimension of the labels. Will be the dimension of the coordinates
+        that are set on `xrobj`, and also will be used to prefix the names of
+        the coordinates. The coordinates will have names of the form 
+        `dimname_colname`, where `colname` is the name of the corresponding
+        column in the DataFrame of `labelmap`.
+    add_dim_prefix : bool, optional
+        Whether to add the dimension prefix to the column names of `labelmap`.
+        Optional, True by default.
+
+    Returns
+    -------
+    xarray.Dataset or xarray.DataArray
+        Copy of `xrobj` with the new aggregation mappings added as coordinates
+        along `dim`. A shallow copy of `xrobj` will be used.
+    """
+    coord_df: pd.DataFrame = labelmap.get_df().copy(deep=False)
+    coord_df = coord_df.rename(
+        columns={
+            _colname: f'{str(dim)}_{_colname}' for _colname in coord_df.columns
+        }
+    )
+    coord_df.index.name = dim
+    xrobj = xrobj.assign_coords(coord_df.to_xarray())
+    return xrobj
+###END def add_aggregation_mapping
