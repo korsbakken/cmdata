@@ -9,4 +9,5 @@ standardizing and keeping track of dimension names.
 from .. import helpers
 from ..labels import iea as iealabels
 
+from . import grouping
 from . import iea
