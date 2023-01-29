@@ -357,7 +357,7 @@ product_aggregation:
       PEAT: "PEAT"
       PEATPROD: "PEAT"
       OILSHALE: "CRUDEOIL"
-      NATGAS: "CRUDEOIL"
+      NATGAS: "NATGAS "
       CRNGFEED: "CRUDEOIL"
       CRUDEOIL: "CRUDEOIL"
       NGL: "OILPRODUCTS"
