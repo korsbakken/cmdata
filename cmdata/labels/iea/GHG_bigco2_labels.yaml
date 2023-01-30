@@ -384,3 +384,23 @@ product_aggregation:
       ONONSPEC: "OILPRODUCTS"
       INDWASTE: "OTHER"
       MUNWASTEN: "OTHER"
+
+flow_main_subcategory_aggregation:
+  orient: "columns"
+  columns: ["parents"]
+  ordered: true
+  parent: "main_subcategories"
+  parent_file: "flow_aggregations.yaml"
+  hierarchy_level: 3  # What level of labels are used as children under the parent aggregation
+  data:
+    parents:
+      MAINPROD: "ELHEAT"
+      AUTOPROD: "ELHEAT"
+      OTHEN: "OTHEREN"
+      TOTIND: "INDUSTRY"
+      TOTTRANS: "TRANSPORT"
+      RESIDENT: "BUILDINGS"
+      COMMPUB: "BUILDINGS"
+      AGRICULT: "AGFORESTFISH"
+      FISHING: "AGFORESTFISH"
+      ONONSPEC: "OTHERFINAL"

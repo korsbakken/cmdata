@@ -11,7 +11,8 @@ _filemanager: LabelfileManager = LabelfileManager(
     yamlfiles={
         'GHG_bigco2': Path('GHG_bigco2_labels.yaml'),
         # 'WEB_wbal': Path('WEB_wbal_labels.yaml')
-        'product_aggregations': Path('product_aggregations.yaml')
+        'product_aggregations': Path('product_aggregations.yaml'),
+        'flow_aggregations': Path('flow_aggregations.yaml')
     }
 )
 
