@@ -45,7 +45,7 @@ def plot_lines(
     opts: tp.Optional[tp.Union[HvOptsType, tp.Sequence[HvOptsType]]] = None,
     backend: tp.Literal['matplotlib'] = 'matplotlib',
     legend_opts: tp.Optional[tp.Mapping[str, tp.Any]] = None,
-    fig_size: int = 120,
+    fig_size: int = 150,
     aspect: float = 1.5
 ) -> tp.Union[hv.NdOverlay, hv.Curve]:
     """Creates a line plot, with optionally overlaid lines."""
