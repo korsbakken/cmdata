@@ -147,6 +147,11 @@ def plot_lines(
 
     # Define curve and point elements to be overlaid, and create a raw figure
     # object (NdOverlay) before applying matplotlib styling options.
+    curves: hv.HoloMap = hvds.to(hv.Curve, kdims=x)
+    points: hv.HoloMap = hvds.to(hv.Scatter, kdims=x)
+    raw_fig: hv.Overlay = (curves*points).overlay(hue)
+
+    # Set color options if needed
     colorlist: tp.List[HvColor]
     colorcycle: tp.Optional[hv.Cycle]
     if colormap:
@@ -155,12 +160,10 @@ def plot_lines(
             colormap[_huedimval] for _huedimval in hue_dim.values
         ]
         colorcycle = hv.Cycle(colorlist)
-    else:
-        colorcycle = None
-
-    curves: hv.HoloMap = hvds.to(hv.Curve, kdims=x, color=colorcycle)
-    points: hv.HoloMap = hvds.to(hv.Scatter, kdims=x, color=colorcycle)
-    raw_fig: hv.Overlay = (curves*points).overlay(hue)
+        raw_fig = tp.cast(hv.Overlay, raw_fig.options(
+            hv.opts.Curve(color=colorcycle),
+            hv.opts.Scatter(color=colorcycle)
+        ))
 
     # Set matplotlib options. First set defaults, then update with the
     # legend_opts parameter if set.
