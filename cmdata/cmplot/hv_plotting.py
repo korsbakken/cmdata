@@ -143,7 +143,7 @@ def plot_lines(
     if legend_labels:
         hue_dim.values = list(legend_labels.values())
     else:
-        hue_dim.values = plotdata[hue].to_list()
+        hue_dim.values = plotdata[hue].to_numpy().tolist()
 
     # Define curve and point elements to be overlaid, and create a raw figure
     # object (NdOverlay) before applying matplotlib styling options.
@@ -173,18 +173,24 @@ def plot_lines(
     if legend_opts:
         mplt_legend_opts.update(legend_opts)
 
+    # Set default matplotlib options. First define a dict, then remove None-
+    # valued items, to avoid passing None values to hv.opts.NdOverlay
+    default_opts_dict: tp.Dict[str, tp.Any] = dict(
+        aspect=aspect,
+        fig_size=fig_size,
+        xlim=xlim,
+        ylim=ylim,
+        xlabel=xlabel,
+        ylabel=ylabel,
+        xticks=xticks,
+        yticks=yticks,
+        legend_opts=mplt_legend_opts
+    )
+    for _key, _val in default_opts_dict.copy().items():
+        if _val is None:
+            del default_opts_dict[_key]
     mplt_opts: tp.Sequence[HvOptsType] = [
-        hv.opts.NdOverlay(
-            aspect=aspect,
-            fig_size=fig_size,
-            xlim=xlim,
-            ylim=ylim,
-            xlabel=xlabel,
-            ylabel=ylabel,
-            xticks=xticks,
-            yticks=yticks,
-            legend_opts=mplt_legend_opts
-        )
+        hv.opts.NdOverlay(**default_opts_dict)
     ]
     if opts:
         if not isinstance(opts, tp.Sequence):
