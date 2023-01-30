@@ -39,6 +39,8 @@ categories:
       RENEWABLE: "Renewables"
       NUCLEAR: "Nuclear"
       OTHER: "Other"
+      ELEC: "Electricity"
+      HEAT: "Heat"
     parents:
       TOTCOAL: "FOSSIL"
       TOTOIL: "FOSSIL"
@@ -46,6 +48,8 @@ categories:
       RENEWABLE: "NONFOSSIL"
       NUCLEAR:  "NONFOSSIL"
       OTHER: "OTHER"
+      ELEC: ""
+      HEAT: ""
 
 subcategories:
   orient: "columns"
@@ -68,6 +72,8 @@ subcategories:
       OTHERRENEW: "Other renewables"
       NUCLEAR: "Nuclear"
       OTHER: "Other"
+      ELEC: "Electricity"
+      HEAT: "Heat"
     parents:
       COAL: "TOTCOAL"
       COKE: "TOTCOAL"
@@ -83,4 +89,6 @@ subcategories:
       OTHERRENEW: "RENEWABLE"
       NUCLEAR: "NUCLEAR"
       OTHER: "OTHER"
+      ELEC: "ELEC"
+      HEAT: "HEAT"
 

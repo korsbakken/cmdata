@@ -1,0 +1,161 @@
+# Labels and hierarchy for IEA extended world energy balances
+%YAML 1.2
+---
+# 2021-01-30: Commenting out the tiny start of introducing hierarcy.
+# Concentrate first on defining aggregations, which can be used directly for
+# producing plots.
+# product_hierarchy:
+#   orient: "columns"
+#   columns: ["level", "parent", "long_name"]
+#   # Note that the "parent" names here denote what the corresponding products
+#   # are labeled as in the 
+
+product_aggregation:
+  orient: "columns"
+  columns: ["parents"]
+  ordered: true
+  parent: "subcategories"
+  parent_file: "product_aggregations.yaml"
+  data:
+    parents:
+      HARDCOAL: "COAL"
+      BROWN: "COAL"
+      ANTCOAL: "COAL"
+      COKCOAL: "COAL"
+      BITCOAL: "COAL"
+      SUBCOAL: "COAL"
+      LIGNITE: "COAL"
+      PATFUEL: "COAL"
+      OVENCOKE: "COKE"
+      GASCOKE: "COKE"
+      COALTAR: "COAL"
+      BKB: "COAL"
+      GASWKSGS: "COALGASES"
+      COKEOVGS: "COALGASES"
+      BLFURGS: "COALGASES"
+      OGASES: "COALGASES"
+      PEAT: "PEAT"
+      PEATPROD: "PEAT"
+      OILSHALE: "CRUDEOIL"
+      NATGAS: "NATGAS"
+      CRNGFEED: "CRUDEOIL"
+      CRUDEOIL: "CRUDEOIL"
+      NGL: "CRUDEOIL"
+      REFFEEDS: "CRUDEOIL"
+      ADDITIVE: "CRUDEOIL"
+      NONCRUDE: "CRUDEOIL"
+      REFINGAS: "OILPRODUCTS"
+      ETHANE: "OILPRODUCTS"
+      LPG: "OILPRODUCTS"
+      NONBIOGASO: "OILPRODUCTS"
+      AVGAS: "OILPRODUCTS"
+      JETGAS: "OILPRODUCTS"
+      NONBIOJETK: "OILPRODUCTS"
+      OTHKERO: "OILPRODUCTS"
+      NONBIODIES: "OILPRODUCTS"
+      RESFUEL: "OILPRODUCTS"
+      NAPHTHA: "OILPRODUCTS"
+      WHITESP: "OILPRODUCTS"
+      LUBRIC: "OILPRODUCTS"
+      BITUMEN: "OILPRODUCTS"
+      PARWAX: "OILPRODUCTS"
+      PETCOKE: "OILPRODUCTS"
+      ONONSPEC: "OILPRODUCTS"
+      INDWASTE: "OTHER"
+      MUNWASTER: "OTHER"
+      MUNWASTEN: "OTHER"
+      PRIMSBIO: "BIO"
+      BIOGASES: "BIO"
+      BIOGASOL: "BIO"
+      BIODIESEL: "BIO"
+      BIOJETKERO: "BIO"
+      OBIOLIQ: "BIO"
+      RENEWNS: "BIO"
+      CHARCOAL: "BIO"
+      MANGAS: "OTHER"
+      HEATNS: "HEAT"
+      NUCLEAR: "NUCLEAR"
+      HYDRO: "HYDRO"
+      GEOTHERM: "OTHERRENEW"
+      SOLARPV: "SOLAR"
+      SOLARTH: "SOLAR"
+      TIDE: "OTHERRENEW"
+      WIND: "WIND"
+      OTHER: "WIND"
+      ELECTR: "WIND"
+      HEAT: "HEAT"
+
+
+
+
+
+# # From IEA product dimension code/name correspondence (CSV):
+# HARDCOAL,Hard coal (if no detail)
+# BROWN,Brown coal (if no detail)
+# ANTCOAL,Anthracite
+# COKCOAL,Coking coal
+# BITCOAL,Other bituminous coal
+# SUBCOAL,Sub-bituminous coal
+# LIGNITE,Lignite
+# PATFUEL,Patent fuel
+# OVENCOKE,Coke oven coke
+# GASCOKE,Gas coke
+# COALTAR,Coal tar
+# BKB,BKB
+# GASWKSGS,Gas works gas
+# COKEOVGS,Coke oven gas
+# BLFURGS,Blast furnace gas
+# OGASES,Other recovered gases
+# PEAT,Peat
+# PEATPROD,Peat products
+# OILSHALE,Oil shale and oil sands
+# NATGAS,Natural gas
+# CRNGFEED,Crude/NGL/feedstocks (if no detail)
+# CRUDEOIL,Crude oil
+# NGL,Natural gas liquids
+# REFFEEDS,Refinery feedstocks
+# ADDITIVE,Additives/blending components
+# NONCRUDE,Other hydrocarbons
+# REFINGAS,Refinery gas
+# ETHANE,Ethane
+# LPG,Liquefied petroleum gases (LPG)
+# NONBIOGASO,Motor gasoline excl. biofuels
+# AVGAS,Aviation gasoline
+# JETGAS,Gasoline type jet fuel
+# NONBIOJETK,Kerosene type jet fuel excl. biofuels
+# OTHKERO,Other kerosene
+# NONBIODIES,Gas/diesel oil excl. biofuels
+# RESFUEL,Fuel oil
+# NAPHTHA,Naphtha
+# WHITESP,White spirit & SBP
+# LUBRIC,Lubricants
+# BITUMEN,Bitumen
+# PARWAX,Paraffin waxes
+# PETCOKE,Petroleum coke
+# ONONSPEC,Other oil products
+# INDWASTE,Industrial waste
+# MUNWASTER,Municipal waste (renewable)
+# MUNWASTEN,Municipal waste (non-renewable)
+# PRIMSBIO,Primary solid biofuels
+# BIOGASES,Biogases
+# BIOGASOL,Biogasoline
+# BIODIESEL,Biodiesels
+# BIOJETKERO,Bio jet kerosene
+# OBIOLIQ,Other liquid biofuels
+# RENEWNS,Non-specified primary biofuels and waste
+# CHARCOAL,Charcoal
+# MANGAS,Elec/heat output from non-specified manufactured gases
+# HEATNS,Heat output from non-specified combustible fuels
+# NUCLEAR,Nuclear
+# HYDRO,Hydro
+# GEOTHERM,Geothermal
+# SOLARPV,Solar photovoltaics
+# SOLARTH,Solar thermal
+# TIDE,"Tide, wave and ocean"
+# WIND,Wind
+# OTHER,Other sources
+# ELECTR,Electricity
+# HEAT,Heat
+# TOTAL,Total
+# MRENEW,Memo: Renewables
+
