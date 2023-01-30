@@ -44,7 +44,7 @@ main_subcategories:
       TRANSPORT: "Transportation"
       AGFORESTFISH: "Agriculture/forestry/fishing"
       OTHERFINAL: "Other final energy"
-    parent:
+    parents:
       PRODUCTION: "PRIMARY"
       NET_IMPORT: "PRIMARY"
       STOCKCH: "PRIMARY"
