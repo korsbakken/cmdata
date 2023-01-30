@@ -404,3 +404,26 @@ flow_main_subcategory_aggregation:
       AGRICULT: "AGFORESTFISH"
       FISHING: "AGFORESTFISH"
       ONONSPEC: "OTHERFINAL"
+
+flow_subindustry_aggregation:
+  orient: "columns"
+  columns: ["parents"]
+  ordered: true
+  parent: "main_subcategories"
+  parent_file: "flow_aggregations.yaml"
+  hierarchy_level: [4, 5]  # What level of labels are used as children under the parent aggregation
+  data:
+    parents:
+      IRONSTL: "STEELIND"
+      NONFERR: "NONFERR"
+      NONMET: "NONMETMINERAL"
+      CHEMICAL: "CHEMICAL"
+      MINING: "OTHERIND"
+      CONSTRUC: "OTHERIND"
+      TRANSEQ: "OTHERIND"
+      MACHINE: "OTHERIND"
+      FOODPRO: "OTHERIND"
+      PAPERPRO: "OTHERIND"
+      WOODPRO: "OTHERIND"
+      TEXTILES: "OTHERIND"
+      INONSPEC: "OTHERIND"

@@ -58,3 +58,21 @@ main_subcategories:
       AGFORESTFISH: "FINAL"
       OTHERFINAL: "FINAL"
 
+industry_subsectors:
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
+  parent: "main_subcategories"
+  data:
+    long_name:
+      STEELIND: "Iron and steel"
+      NONFERR: "Non-ferrous metals"
+      NONMETMINERAL: "Non-metal minerals"
+      CHEMICAL: "Chemical industry"
+      OTHERIND: "Other industry"
+    parents:
+      STEELIND: "INDUSTRY"
+      NONFERR: "INDUSTRY"
+      NONMETMINERAL: "INDUSTRY"
+      CHEMICAL: "INDUSTRY"
+      OTHERIND: "INDUSTRY"
