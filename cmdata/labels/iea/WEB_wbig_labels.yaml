@@ -152,6 +152,28 @@ flow_aggregation:
       NONENUSE: "NONEN"
 
 
+flow_subindustry_aggregation:
+  orient: "columns"
+  columns: ["parents"]
+  ordered: true
+  parent: "main_subcategories"
+  parent_file: "flow_aggregations.yaml"
+  data:
+    parents:
+      IRONSTL: "STEELIND"
+      NONFERR: "NONFERR"
+      NONMET: "NONMETMINERAL"
+      CHEMICAL: "CHEMICAL"
+      MINING: "OTHERIND"
+      CONSTRUC: "OTHERIND"
+      TRANSEQ: "OTHERIND"
+      MACHINE: "OTHERIND"
+      FOODPRO: "OTHERIND"
+      PAPERPRO: "OTHERIND"
+      WOODPRO: "OTHERIND"
+      TEXTILES: "OTHERIND"
+      INONSPEC: "OTHERIND"
+
 
 # # From IEA product dimension code/name correspondence (CSV):
 # HARDCOAL,Hard coal (if no detail)
