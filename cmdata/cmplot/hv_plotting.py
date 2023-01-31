@@ -313,6 +313,66 @@ def plot_bar_stacked(
                 )
             }
 
+    ###
+    # EXPERIMENT: Plot with plotly instead.
+    # Return a plotly fig, meaning that a lot of holoviews code below does not
+    # get called. Being kept for reference until the plotly code is done.
+    ###
+    import plotly
+    import plotly.express as px
+
+    # Define a helper to turn a 3-float tuple (of values from 0.0 to 1.0) into
+    # a hex code string.
+    def hexify(c: tp.Union[str, tp.Iterable[float]], norm: int = 255, n: int = 2) -> str:
+        if isinstance(c, str):
+            return c
+        else:
+            hexlist: tp.List[str] = [
+                f'{int(x*norm):02x}' for x in c
+            ]
+            return ''.join(['#']+hexlist)
+    if colormap:
+        colormap = {
+            _key: hexify(_c) for _key, _c in colormap.items()
+        }
+    
+    # First, separate out the total again, if a total was added.
+    if add_total:
+        total_id: tp.Hashable \
+            = total_label if legend_labels and hue == add_total_dim \
+                else total_code
+        total_data: xr.DataArray = plotdata[y].sel({add_total_dim: [total_id]})
+        total_fig = px.scatter(
+            total_data.to_series().reset_index(),
+            x=x,
+            y=y,
+            color=hue,
+            color_discrete_map=colormap
+        )
+        bar_data: xr.DataArray = plotdata[y].sel(
+            {
+                add_total_dim: [
+                    _coord for _coord in plotdata[add_total_dim].to_numpy()
+                    if _coord != total_id
+                ]
+            }
+        )
+    else:
+        bar_data = plotdata[y]
+
+    bar_fig = px.bar(
+        bar_data.to_series().reset_index(),
+        x=x,
+        y=y,
+        color=hue,
+        color_discrete_map=colormap
+    )
+
+    if add_total:
+        bar_fig.add_trace(total_fig.data[0])
+
+    return bar_fig
+
     # Create the holoviews Dataset to use for plotting
     hvds: hv.Dataset = hv.Dataset(
         data=plotdata,
