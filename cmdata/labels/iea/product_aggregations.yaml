@@ -51,11 +51,44 @@ categories:
       ELEC: ""
       HEAT: ""
 
-subcategories:
+categories_resolved_renewables:
   orient: "columns"
   columns: ["long_name", "parents"]
   ordered: true
   parent: "categories"
+  data:
+    long_name:
+      TOTCOAL: "Coal"
+      TOTOIL: "Petroleum"
+      TOTNATGAS: "Natural gas"
+      HYDRO: "Hydropower"
+      WIND: "Wind"
+      SOLAR: "Solar"
+      BIO: "Bioenergy"
+      OTHERRENEW: "Other renewables"
+      NUCLEAR: "Nuclear"
+      OTHER: "Other"
+      ELEC: "Electricity"
+      HEAT: "Heat"
+    parents:
+      TOTCOAL: "TOTCOAL"
+      TOTOIL: "TOTOIL"
+      TOTNATGAS: "TOTNATGAS"
+      HYDRO: "RENEWABLE"
+      WIND: "RENEWABLE"
+      SOLAR: "RENEWABLE"
+      BIO: "RENEWABLE"
+      OTHERRENEW: "RENEWABLE"
+      NUCLEAR: "NUCLEAR"
+      OTHER: "OTHER"
+      ELEC: "ELEC"
+      HEAT: "HEAT"
+
+subcategories:
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
+  parent: "categories_resolved_renewables"
   data:
     long_name:
       COAL: "Coal"
@@ -82,11 +115,11 @@ subcategories:
       CRUDEOIL: "TOTOIL"
       OILPRODUCTS: "TOTOIL"
       NATGAS: "TOTNATGAS"
-      HYDRO: "RENEWABLE"
-      WIND: "RENEWABLE"
-      SOLAR: "RENEWABLE"
-      BIO: "RENEWABLE"
-      OTHERRENEW: "RENEWABLE"
+      HYDRO: "HYDRO"
+      WIND: "WIND"
+      SOLAR: "SOLAR"
+      BIO: "BIO"
+      OTHERRENEW: "OTHERRENEW"
       NUCLEAR: "NUCLEAR"
       OTHER: "OTHER"
       ELEC: "ELEC"
