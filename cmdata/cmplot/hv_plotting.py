@@ -342,7 +342,7 @@ def plot_bar_stacked(
             = total_label if legend_labels and hue == add_total_dim \
                 else total_code
         total_data: xr.DataArray = plotdata[y].sel({add_total_dim: [total_id]})
-        total_fig = px.scatter(
+        total_fig: plotly.graph_objs.Figure = px.scatter(
             total_data.to_series().reset_index(),
             x=x,
             y=y,
@@ -360,7 +360,7 @@ def plot_bar_stacked(
     else:
         bar_data = plotdata[y]
 
-    bar_fig = px.bar(
+    bar_fig: plotly.graph_objs.Figure = px.bar(
         bar_data.to_series().reset_index(),
         x=x,
         y=y,
@@ -370,6 +370,32 @@ def plot_bar_stacked(
 
     if add_total:
         bar_fig.add_trace(total_fig.data[0])
+
+    bar_fig.update_layout(
+        legend_traceorder='reversed',
+        legend_title=None
+    )
+    
+    # Style the axes
+    bar_fig.update_layout(
+        xaxis_title=xlabel,
+        yaxis_title=ylabel,
+        plot_bgcolor='white'
+    )
+    bar_fig.update_xaxes(
+        tickvals=xticks,
+        range=xlim,
+        showline=True,
+        linecolor='black'
+    )
+    bar_fig.update_yaxes(
+        tickvals=yticks,
+        range=ylim,
+        showline=True,
+        linecolor='black',
+        zeroline=True,
+        zerolinecolor='black'
+    )
 
     return bar_fig
 
