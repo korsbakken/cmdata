@@ -81,11 +81,75 @@ product_aggregation:
       SOLARTH: "SOLAR"
       TIDE: "OTHERRENEW"
       WIND: "WIND"
-      OTHER: "WIND"
-      ELECTR: "WIND"
+      OTHER: "OTHER"
+      ELECTR: "ELEC"
       HEAT: "HEAT"
 
 
+flow_aggregation:
+  orient: "columns"
+  columns: ["parents"]
+  ordered: true
+  parent: "main_subcategories"
+  parent_file: "flow_aggregations.yaml"
+  data:
+    parents:
+      INDPROD: "PRODUCTION"
+      IMPORTS: "NET_IMPORT"
+      EXPORTS: "NET_IMPORT"
+      MARBUNK: "NET_IMPORT"
+      AVBUNK: "NET_IMPORT"
+      STOCKCHA: "STOCKCH"
+      TRANSFER: "STATDIFF"
+      STATDIFF: "STATDIFF"
+      MAINELEC: "ELHEAT"
+      AUTOELEC: "ELHEAT"
+      MAINCHP: "ELHEAT"
+      AUTOCHP: "ELHEAT"
+      MAINHEAT: "ELHEAT"
+      AUTOHEAT: "ELHEAT"
+      THEAT: "OTHEREN"
+      TBOILER: "OTHEREN"
+      TELE: "OTHEREN"
+      TBLASTFUR: "OTHEREN"
+      TGASWKS: "OTHEREN"
+      TCOKEOVS: "OTHEREN"
+      TPATFUEL: "OTHEREN"
+      TBKB: "OTHEREN"
+      TREFINER: "OTHEREN"
+      TPETCHEM: "OTHEREN"
+      TCOALLIQ: "OTHEREN"
+      TGTL: "OTHEREN"
+      TBLENDGAS: "OTHEREN"
+      TCHARCOAL: "OTHEREN"
+      TNONSPEC: "OTHEREN"
+      TOTENGY: "OTHEREN"
+      EMINES: "OTHEREN"
+      EOILGASEX: "OTHEREN"
+      EBLASTFUR: "OTHEREN"
+      EGASWKS: "OTHEREN"
+      EBIOGAS: "OTHEREN"
+      ECOKEOVS: "OTHEREN"
+      EPATFUEL: "OTHEREN"
+      EBKB: "OTHEREN"
+      EREFINER: "OTHEREN"
+      ECOALLIQ: "OTHEREN"
+      ELNG: "OTHEREN"
+      EGTL: "OTHEREN"
+      EPOWERPLT: "OTHEREN"
+      EPUMPST: "OTHEREN"
+      ENUC: "OTHEREN"
+      ECHARCOAL: "OTHEREN"
+      ENONSPEC: "OTHEREN"
+      DISTLOSS: "OTHEREN"
+      TOTIND: "INDUSTRY"
+      TOTTRANS: "TRANSPORT"
+      RESIDENT: "BUILDINGS"
+      COMMPUB: "BUILDINGS"
+      AGRICULT: "AGFORESTFISH"
+      FISHING: "AGFORESTFISH"
+      ONONSPEC: "OTHERFINAL"
+      NONENUSE: "NONEN"
 
 
 
@@ -158,4 +222,116 @@ product_aggregation:
 # HEAT,Heat
 # TOTAL,Total
 # MRENEW,Memo: Renewables
+
+
+# # From IEA flow dimension code/name correspondence (CSV):
+# INDPROD,Production,
+# IMPORTS,Imports,
+# EXPORTS,Exports,
+# MARBUNK,International marine bunkers,
+# AVBUNK,International aviation bunkers,
+# STOCKCHA,Stock changes,
+# TES,Total energy supply,
+# TRANSFER,   Transfers,
+# STATDIFF,   Statistical differences,
+# TOTTRANF,   Transformation processes,
+# MAINELEC,      Main activity producer electricity plants,
+# AUTOELEC,      Autoproducer electricity plants,
+# MAINCHP,      Main activity producer CHP plants,
+# AUTOCHP,      Autoproducer CHP plants,
+# MAINHEAT,      Main activity producer heat plants,
+# AUTOHEAT,      Autoproducer heat plants,
+# THEAT,      Heat pumps,
+# TBOILER,      Electric boilers,
+# TELE,      Chemical heat for electricity production,
+# TBLASTFUR,      Blast furnaces,
+# TGASWKS,      Gas works,
+# TCOKEOVS,      Coke ovens,
+# TPATFUEL,      Patent fuel plants,
+# TBKB,      BKB/peat briquette plants,
+# TREFINER,      Oil refineries,
+# TPETCHEM,      Petrochemical plants,
+# TCOALLIQ,      Coal liquefaction plants,
+# TGTL,      Gas-to-liquids (GTL) plants,
+# TBLENDGAS,      For blended natural gas,
+# TCHARCOAL,      Charcoal production plants,
+# TNONSPEC,      Non-specified (transformation),
+# TOTENGY,   Energy industry own use,
+# EMINES,      Coal mines,
+# EOILGASEX,      Oil and gas extraction,
+# EBLASTFUR,      Blast furnaces,
+# EGASWKS,      Gas works,
+# EBIOGAS,      Gasification plants for biogases,
+# ECOKEOVS,      Coke ovens,
+# EPATFUEL,      Patent fuel plants,
+# EBKB,      BKB/peat briquette plants,
+# EREFINER,      Oil refineries,
+# ECOALLIQ,      Coal liquefaction plants,
+# ELNG,      Liquefaction (LNG) / regasification plants,
+# EGTL,      Gas-to-liquids (GTL) plants,
+# EPOWERPLT,"      Own use in electricity, CHP and heat plants",
+# EPUMPST,      Pumped storage plants,
+# ENUC,      Nuclear industry,
+# ECHARCOAL,      Charcoal production plants,
+# ENONSPEC,      Non-specified (energy),
+# DISTLOSS,   Losses,
+# TFC,   Total final consumption,
+# TOTIND,      Industry,
+# MINING,         Mining and quarrying,
+# CONSTRUC,         Construction,
+# MANUFACT,         Manufacturing,
+# IRONSTL,            Iron and steel,
+# CHEMICAL,            Chemical and petrochemical,
+# NONFERR,            Non-ferrous metals,
+# NONMET,            Non-metallic minerals,
+# TRANSEQ,            Transport equipment,
+# MACHINE,            Machinery,
+# FOODPRO,            Food and tobacco,
+# PAPERPRO,"            Paper, pulp and printing",
+# WOODPRO,            Wood and wood products,
+# TEXTILES,            Textile and leather,
+# INONSPEC,         Industry not elsewhere specified,
+# TOTTRANS,      Transport,
+# WORLDAV,         World aviation bunkers,
+# DOMESAIR,         Domestic aviation,
+# ROAD,         Road,
+# RAIL,         Rail,
+# PIPELINE,         Pipeline transport,
+# WORLDMAR,         World marine bunkers,
+# DOMESNAV,         Domestic navigation,
+# TRNONSPE,         Transport not elsewhere specified,
+# RESIDENT,      Residential,
+# COMMPUB,      Commercial and public services,
+# AGRICULT,      Agriculture/forestry,
+# FISHING,      Fishing,
+# ONONSPEC,      Final consumption not elsewhere specified,
+# NONENUSE,      Non-energy use,
+# NEINTREN,         Non-energy use industry/transformation/energy,
+# NEIND,            Memo: Non-energy use in industry,
+# NECONSTRUC,               Memo: Non-energy use in construction,
+# NEMINING,               Memo: Non-energy use in mining and quarrying,
+# NEIRONSTL,               Memo: Non-energy use in iron and steel,
+# NECHEM,               Memo: Non-energy use in chemical/petrochemical,
+# NENONFERR,               Memo: Non-energy use in non-ferrous metals,
+# NENONMET,               Memo: Non-energy use in non-metallic minerals,
+# NETRANSEQ,               Memo: Non-energy use in transport equipment,
+# NEMACHINE,               Memo: Non-energy use in machinery,
+# NEFOODPRO,               Memo: Non-energy use in food/beverages/tobacco,
+# NEPAPERPRO,               Memo: Non-energy use in paper/pulp and printing,
+# NEWOODPRO,               Memo: Non-energy use in wood and wood products,
+# NETEXTILES,               Memo: Non-energy use in textiles and leather,
+# NEINONSPEC,               Memo: Non-energy use in industry not elsewhere specified,
+# NETRANS,         Non-energy use in transport,
+# NEOTHER,         Non-energy use in other,
+# ELOUTPUT,Electricity output (GWh),
+# ELMAINE,   Electricity output (GWh)-main activity producer electricity plants,
+# ELAUTOE,   Electricity output (GWh)-autoproducer electricity plants,
+# ELMAINC,   Electricity output (GWh)-main activity producer CHP plants,
+# ELAUTOC,   Electricity output (GWh)-autoproducer CHP plants,
+# HEATOUT,Heat output,
+# HEMAINC,   Heat output-main activity producer CHP plants,
+# HEAUTOC,   Heat output-autoproducer CHP plants,
+# HEMAINH,   Heat output-main activity producer heat plants,
+# HEAUTOH,   Heat output-autoproducer heat plants,
+
 

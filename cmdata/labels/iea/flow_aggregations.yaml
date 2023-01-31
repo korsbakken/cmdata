@@ -44,6 +44,7 @@ main_subcategories:
       TRANSPORT: "Transportation"
       AGFORESTFISH: "Agriculture/forestry/fishing"
       OTHERFINAL: "Other final energy"
+      NONEN: "Non-energy use"
     parents:
       PRODUCTION: "PRIMARY"
       NET_IMPORT: "PRIMARY"
@@ -57,6 +58,7 @@ main_subcategories:
       TRANSPORT: "FINAL"
       AGFORESTFISH: "FINAL"
       OTHERFINAL: "FINAL"
+      NONEN: "FINAL"
 
 industry_subsectors:
   orient: "columns"
