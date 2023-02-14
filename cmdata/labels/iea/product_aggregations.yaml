@@ -139,7 +139,7 @@ categories_resolved_renewables_china_thermal_parent:
       BIO: "THERMAL"
       OTHERRENEW: "OTHER"
       NUCLEAR: "NUCLEAR"
-      OTHER: "OTHER"
+      OTHER: "THERMAL:w"
       ELEC: "OTHER"
       HEAT: "THERMAL"
 
