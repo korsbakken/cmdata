@@ -84,6 +84,65 @@ categories_resolved_renewables:
       ELEC: "ELEC"
       HEAT: "HEAT"
 
+categories_china_sources_agg_solar_wind:
+  # This categorization is meant to follow Chinese power generation statistics,
+  # with aggregated thermal sources (except that it also aggregates solar and
+  # wind, for less cluttered charts. This categorization is top-level for now,
+  # as the "THERMAL" category does not map cleanly into the fossil vs.
+  # non-fossil or renewable divide.
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
+  parent: ""
+  data:
+    long_name:
+      THERMAL: "Thermal"
+      HYDRO: "Hydro"
+      WINDSOLAR: "Wind+solar"
+      NUCLEAR: "Nuclear"
+      OTHER: "Other"
+    parents:
+      THERMAL: ""
+      HYDRO: ""
+      WINDSOLAR: ""
+      NUCLEAR: ""
+      OTHER: ""
+
+categories_resolved_renewables_china_thermal_parent:
+  # This categorization is meant to aggregate to categories matching Chinese
+  # power generation statistics, with aggregated thermal power
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
+  parent: "categories_china_sources_agg_solar_wind"
+  data:
+    long_name:
+      TOTCOAL: "Coal"
+      TOTOIL: "Petroleum"
+      TOTNATGAS: "Natural gas"
+      HYDRO: "Hydropower"
+      WIND: "Wind"
+      SOLAR: "Solar"
+      BIO: "Bioenergy"
+      OTHERRENEW: "Other renewables"
+      NUCLEAR: "Nuclear"
+      OTHER: "Other"
+      ELEC: "Electricity"
+      HEAT: "Heat"
+    parents:
+      TOTCOAL: "THERMAL"
+      TOTOIL: "THERMAL"
+      TOTNATGAS: "THERMAL"
+      HYDRO: "HYDRO"
+      WIND: "WINDSOLAR"
+      SOLAR: "WINDSOLAR"
+      BIO: "THERMAL"
+      OTHERRENEW: "OTHER"
+      NUCLEAR: "NUCLEAR"
+      OTHER: "OTHER"
+      ELEC: "OTHER"
+      HEAT: "THERMAL"
+
 subcategories:
   orient: "columns"
   columns: ["long_name", "parents"]
