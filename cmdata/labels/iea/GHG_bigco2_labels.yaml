@@ -148,13 +148,282 @@ flow_hierarchy:
       TFC: "Memo: Total final consumption"
       ELECHEAT: "Memo: Electricity and heat production"
 
-product_wbal_hierarchy:
+# product_wbal_hierarchy:
+#   orient: "columns"
+#   columns: ["level", "parent", "long_name"]
+#   ordered: true
+#   # NB! This is not a hierarchy of products in the BIGCO2 dataset (mostly), but
+#   # rather a correspondence of which product in WEB_wbal each product belongs
+#   # under, as well as a hierarchy of the products in WEB_wbal.
+#   data:
+#     level:
+      
+product_hierarchy:
   orient: "columns"
   columns: ["level", "parent", "long_name"]
   ordered: true
-  # NB! This is not a hierarchy of products in the BIGCO2 dataset (mostly), but
-  # rather a correspondence of which product in WEB_wbal each product belongs
-  # under, as well as a hierarchy of the products in WEB_wbal.
   data:
     level:
-      
+      TOTAL: 1
+      HARDCOAL: 2
+      BROWN: 2
+      ANTCOAL: 2
+      COKCOAL: 2
+      BITCOAL: 2
+      SUBCOAL: 2
+      LIGNITE: 2
+      PATFUEL: 2
+      OVENCOKE: 2
+      GASCOKE: 2
+      COALTAR: 2
+      BKB: 2
+      GASWKSGS: 2
+      COKEOVGS: 2
+      BLFURGS: 2
+      OGASES: 2
+      PEAT: 2
+      PEATPROD: 2
+      OILSHALE: 2
+      NATGAS: 2
+      CRNGFEED: 2
+      CRUDEOIL: 2
+      NGL: 2
+      REFFEEDS: 2
+      ADDITIVE: 2
+      ORIMUL: 2
+      NONCRUDE: 2
+      REFINGAS: 2
+      ETHANE: 2
+      LPG: 2
+      NONBIOGASO: 2
+      AVGAS: 2
+      JETGAS: 2
+      NONBIOJETK: 2
+      OTHKERO: 2
+      NONBIODIES: 2
+      RESFUEL: 2
+      NAPHTHA: 2
+      WHITESP: 2
+      LUBRIC: 2
+      BITUMEN: 2
+      PARWAX: 2
+      PETCOKE: 2
+      ONONSPEC: 2
+      INDWASTE: 2
+      MUNWASTEN: 2
+      PRIMSBIO: 99
+      BIOGASES: 99
+      BIOGASOL: 99
+      BIODIESEL: 99
+      OBIOLIQ: 99
+      RENEWNS: 99
+      CHARCOAL: 99
+    parent:
+      TOTAL: ""
+      HARDCOAL: "TOTAL"
+      BROWN: "TOTAL"
+      ANTCOAL: "TOTAL"
+      COKCOAL: "TOTAL"
+      BITCOAL: "TOTAL"
+      SUBCOAL: "TOTAL"
+      LIGNITE: "TOTAL"
+      PATFUEL: "TOTAL"
+      OVENCOKE: "TOTAL"
+      GASCOKE: "TOTAL"
+      COALTAR: "TOTAL"
+      BKB: "TOTAL"
+      GASWKSGS: "TOTAL"
+      COKEOVGS: "TOTAL"
+      BLFURGS: "TOTAL"
+      OGASES: "TOTAL"
+      PEAT: "TOTAL"
+      PEATPROD: "TOTAL"
+      OILSHALE: "TOTAL"
+      NATGAS: "TOTAL"
+      CRNGFEED: "TOTAL"
+      CRUDEOIL: "TOTAL"
+      NGL: "TOTAL"
+      REFFEEDS: "TOTAL"
+      ADDITIVE: "TOTAL"
+      ORIMUL: "TOTAL"
+      NONCRUDE: "TOTAL"
+      REFINGAS: "TOTAL"
+      ETHANE: "TOTAL"
+      LPG: "TOTAL"
+      NONBIOGASO: "TOTAL"
+      AVGAS: "TOTAL"
+      JETGAS: "TOTAL"
+      NONBIOJETK: "TOTAL"
+      OTHKERO: "TOTAL"
+      NONBIODIES: "TOTAL"
+      RESFUEL: "TOTAL"
+      NAPHTHA: "TOTAL"
+      WHITESP: "TOTAL"
+      LUBRIC: "TOTAL"
+      BITUMEN: "TOTAL"
+      PARWAX: "TOTAL"
+      PETCOKE: "TOTAL"
+      ONONSPEC: "TOTAL"
+      INDWASTE: "TOTAL"
+      MUNWASTEN: "TOTAL"
+      PRIMSBIO: "TOTAL"
+      BIOGASES: "TOTAL"
+      BIOGASOL: "TOTAL"
+      BIODIESEL: "TOTAL"
+      OBIOLIQ: "TOTAL"
+      RENEWNS: "TOTAL"
+      CHARCOAL: "TOTAL"
+    long_name:
+      TOTAL: "Total"
+      HARDCOAL: "Hard coal (if no detail)"
+      BROWN: "Brown coal (if no detail)"
+      ANTCOAL: "Anthracite"
+      COKCOAL: "Coking coal"
+      BITCOAL: "Other bituminous coal"
+      SUBCOAL: "Sub-bituminous coal"
+      LIGNITE: "Lignite"
+      PATFUEL: "Patent fuel"
+      OVENCOKE: "Coke oven coke"
+      GASCOKE: "Gas coke"
+      COALTAR: "Coal tar"
+      BKB: "BKB"
+      GASWKSGS: "Gas works gas"
+      COKEOVGS: "Coke oven gas"
+      BLFURGS: "Blast furnace gas"
+      OGASES: "Other recovered gases"
+      PEAT: "Peat"
+      PEATPROD: "Peat products"
+      OILSHALE: "Oil shale"
+      NATGAS: "Natural gas"
+      CRNGFEED: "Crude\/NGL\/feedstocks (if no detail)"
+      CRUDEOIL: "Crude oil"
+      NGL: "Natural gas liquids"
+      REFFEEDS: "Refinery feedstocks"
+      ADDITIVE: "Additives\/blending components"
+      ORIMUL: "Orimulsion"
+      NONCRUDE: "Other hydrocarbons"
+      REFINGAS: "Refinery gas"
+      ETHANE: "Ethane"
+      LPG: "Liquefied petroleum gases (LPG)"
+      NONBIOGASO: "Motor gasoline excl. biofuels"
+      AVGAS: "Aviation gasoline"
+      JETGAS: "Gasoline type jet fuel"
+      NONBIOJETK: "Kerosene type jet fuel excl. biofuels"
+      OTHKERO: "Other kerosene"
+      NONBIODIES: "Gas\/diesel oil excl. biofuels"
+      RESFUEL: "Fuel oil"
+      NAPHTHA: "Naphtha"
+      WHITESP: "White spirit & SBP"
+      LUBRIC: "Lubricants"
+      BITUMEN: "Bitumen"
+      PARWAX: "Paraffin waxes"
+      PETCOKE: "Petroleum coke"
+      ONONSPEC: "Non-specified oil products"
+      INDWASTE: "Industrial waste"
+      MUNWASTEN: "Municipal waste (non-renew)"
+      PRIMSBIO: "Memo: Primary solid biofuels"
+      BIOGASES: "Memo: Biogases"
+      BIOGASOL: "Memo: Biogasoline"
+      BIODIESEL: "Memo: Biodiesels"
+      OBIOLIQ: "Memo: Other liquid biofuels"
+      RENEWNS: "Memo: Non-specified primary biofuels & waste"
+      CHARCOAL: "Memo: Charcoal"
+
+product_aggregation:
+  orient: "columns"
+  columns: ["parents"]
+  ordered: true
+  parent: "subcategories"
+  parent_file: "product_aggregations.yaml"
+  hierarchy_level: 2  # What level of labels are used as children under the parent aggregation
+  data:
+    parents:
+      HARDCOAL: "COAL"
+      BROWN: "COAL"
+      ANTCOAL: "COAL"
+      COKCOAL: "COAL"
+      BITCOAL: "COAL"
+      SUBCOAL: "COAL"
+      LIGNITE: "COAL"
+      PATFUEL: "COAL"
+      OVENCOKE: "COKE"
+      GASCOKE: "COKE"
+      COALTAR: "COAL"
+      BKB: "COAL"
+      GASWKSGS: "COALGASES"
+      COKEOVGS: "COALGASES"
+      BLFURGS: "COALGASES"
+      OGASES: "COALGASES"
+      PEAT: "PEAT"
+      PEATPROD: "PEAT"
+      OILSHALE: "CRUDEOIL"
+      NATGAS: "NATGAS"
+      CRNGFEED: "CRUDEOIL"
+      CRUDEOIL: "CRUDEOIL"
+      NGL: "OILPRODUCTS"
+      REFFEEDS: "OILPRODUCTS"
+      ADDITIVE: "OILPRODUCTS"
+      ORIMUL: "OILPRODUCTS"
+      NONCRUDE: "OILPRODUCTS"
+      REFINGAS: "OILPRODUCTS"
+      ETHANE: "OILPRODUCTS"
+      LPG: "OILPRODUCTS"
+      NONBIOGASO: "OILPRODUCTS"
+      AVGAS: "OILPRODUCTS"
+      JETGAS: "OILPRODUCTS"
+      NONBIOJETK: "OILPRODUCTS"
+      OTHKERO: "OILPRODUCTS"
+      NONBIODIES: "OILPRODUCTS"
+      RESFUEL: "OILPRODUCTS"
+      NAPHTHA: "OILPRODUCTS"
+      WHITESP: "OILPRODUCTS"
+      LUBRIC: "OILPRODUCTS"
+      BITUMEN: "OILPRODUCTS"
+      PARWAX: "OILPRODUCTS"
+      PETCOKE: "OILPRODUCTS"
+      ONONSPEC: "OILPRODUCTS"
+      INDWASTE: "OTHER"
+      MUNWASTEN: "OTHER"
+
+flow_main_subcategory_aggregation:
+  orient: "columns"
+  columns: ["parents"]
+  ordered: true
+  parent: "main_subcategories"
+  parent_file: "flow_aggregations.yaml"
+  hierarchy_level: 3  # What level of labels are used as children under the parent aggregation
+  data:
+    parents:
+      MAINPROD: "ELHEAT"
+      AUTOPROD: "ELHEAT"
+      OTHEN: "OTHEREN"
+      TOTIND: "INDUSTRY"
+      TOTTRANS: "TRANSPORT"
+      RESIDENT: "BUILDINGS"
+      COMMPUB: "BUILDINGS"
+      AGRICULT: "AGFORESTFISH"
+      FISHING: "AGFORESTFISH"
+      ONONSPEC: "OTHERFINAL"
+
+flow_subindustry_aggregation:
+  orient: "columns"
+  columns: ["parents"]
+  ordered: true
+  parent: "main_subcategories"
+  parent_file: "flow_aggregations.yaml"
+  hierarchy_level: [4, 5]  # What level of labels are used as children under the parent aggregation
+  data:
+    parents:
+      IRONSTL: "STEELIND"
+      NONFERR: "NONFERR"
+      NONMET: "NONMETMINERAL"
+      CHEMICAL: "CHEMICAL"
+      MINING: "OTHERIND"
+      CONSTRUC: "OTHERIND"
+      TRANSEQ: "OTHERIND"
+      MACHINE: "OTHERIND"
+      FOODPRO: "OTHERIND"
+      PAPERPRO: "OTHERIND"
+      WOODPRO: "OTHERIND"
+      TEXTILES: "OTHERIND"
+      INONSPEC: "OTHERIND"

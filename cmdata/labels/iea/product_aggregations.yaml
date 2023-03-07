@@ -1,0 +1,186 @@
+# Aggregation of labels for the product dimension in IEA datasets
+%YAML 1.2
+---
+aggregation_levels:
+  # This list of lists states at which level each aggregation occurs. Could be
+  # determined automatically from the aggregation definitions below, but should
+  # be defined here for convenience and readability. Note, however, that if any
+  # changes are made to one line of aggregations, the levels of other
+  # aggregation lines may also need to be updated.
+  - ["major_categories"]
+  - ["categories"]
+  - ["subcategories"]
+
+major_categories:
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
+  parent: ""
+  data:
+    long_name:
+      FOSSIL: "Fossil fuels"
+      NONFOSSIL: "Non-fossil energy"
+      OTHER: "Other"
+    parents:
+      FOSSIL: ""
+      NONFOSSIL: ""
+      OTHER: ""
+
+categories:
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
+  parent: "major_categories"
+  data:
+    long_name:
+      TOTCOAL: "Coal"
+      TOTOIL: "Petroleum"
+      TOTNATGAS: "Natural gas"
+      RENEWABLE: "Renewables"
+      NUCLEAR: "Nuclear"
+      OTHER: "Other"
+      ELEC: "Electricity"
+      HEAT: "Heat"
+    parents:
+      TOTCOAL: "FOSSIL"
+      TOTOIL: "FOSSIL"
+      TOTNATGAS: "FOSSIL"
+      RENEWABLE: "NONFOSSIL"
+      NUCLEAR:  "NONFOSSIL"
+      OTHER: "OTHER"
+      ELEC: ""
+      HEAT: ""
+
+categories_resolved_renewables:
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
+  parent: "categories"
+  data:
+    long_name:
+      TOTCOAL: "Coal"
+      TOTOIL: "Petroleum"
+      TOTNATGAS: "Natural gas"
+      HYDRO: "Hydropower"
+      WIND: "Wind"
+      SOLAR: "Solar"
+      BIO: "Bioenergy"
+      OTHERRENEW: "Other renewables"
+      NUCLEAR: "Nuclear"
+      OTHER: "Other"
+      ELEC: "Electricity"
+      HEAT: "Heat"
+    parents:
+      TOTCOAL: "TOTCOAL"
+      TOTOIL: "TOTOIL"
+      TOTNATGAS: "TOTNATGAS"
+      HYDRO: "RENEWABLE"
+      WIND: "RENEWABLE"
+      SOLAR: "RENEWABLE"
+      BIO: "RENEWABLE"
+      OTHERRENEW: "RENEWABLE"
+      NUCLEAR: "NUCLEAR"
+      OTHER: "OTHER"
+      ELEC: "ELEC"
+      HEAT: "HEAT"
+
+categories_china_sources_agg_solar_wind:
+  # This categorization is meant to follow Chinese power generation statistics,
+  # with aggregated thermal sources (except that it also aggregates solar and
+  # wind, for less cluttered charts. This categorization is top-level for now,
+  # as the "THERMAL" category does not map cleanly into the fossil vs.
+  # non-fossil or renewable divide.
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
+  parent: ""
+  data:
+    long_name:
+      THERMAL: "Thermal"
+      HYDRO: "Hydro"
+      WINDSOLAR: "Wind+solar"
+      NUCLEAR: "Nuclear"
+      OTHER: "Other"
+    parents:
+      THERMAL: ""
+      HYDRO: ""
+      WINDSOLAR: ""
+      NUCLEAR: ""
+      OTHER: ""
+
+categories_resolved_renewables_china_thermal_parent:
+  # This categorization is meant to aggregate to categories matching Chinese
+  # power generation statistics, with aggregated thermal power
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
+  parent: "categories_china_sources_agg_solar_wind"
+  data:
+    long_name:
+      TOTCOAL: "Coal"
+      TOTOIL: "Petroleum"
+      TOTNATGAS: "Natural gas"
+      HYDRO: "Hydropower"
+      WIND: "Wind"
+      SOLAR: "Solar"
+      BIO: "Bioenergy"
+      OTHERRENEW: "Other renewables"
+      NUCLEAR: "Nuclear"
+      OTHER: "Other"
+      ELEC: "Electricity"
+      HEAT: "Heat"
+    parents:
+      TOTCOAL: "THERMAL"
+      TOTOIL: "THERMAL"
+      TOTNATGAS: "THERMAL"
+      HYDRO: "HYDRO"
+      WIND: "WINDSOLAR"
+      SOLAR: "WINDSOLAR"
+      BIO: "THERMAL"
+      OTHERRENEW: "OTHER"
+      NUCLEAR: "NUCLEAR"
+      OTHER: "THERMAL"
+      ELEC: "OTHER"
+      HEAT: "THERMAL"
+
+subcategories:
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
+  parent: "categories_resolved_renewables"
+  data:
+    long_name:
+      COAL: "Coal"
+      COKE: "Coal coke"
+      PEAT: "Peat"
+      COALGASES: "Coal-derived gases"
+      CRUDEOIL: "Crude oil"
+      OILPRODUCTS: "Petroleum products"
+      NATGAS: "Natural gas"
+      HYDRO: "Hydropower"
+      WIND: "Wind"
+      SOLAR: "Solar"
+      BIO: "Bioenergy"
+      OTHERRENEW: "Other renewables"
+      NUCLEAR: "Nuclear"
+      OTHER: "Other"
+      ELEC: "Electricity"
+      HEAT: "Heat"
+    parents:
+      COAL: "TOTCOAL"
+      COKE: "TOTCOAL"
+      PEAT: "TOTCOAL"
+      COALGASES: "TOTCOAL"
+      CRUDEOIL: "TOTOIL"
+      OILPRODUCTS: "TOTOIL"
+      NATGAS: "TOTNATGAS"
+      HYDRO: "HYDRO"
+      WIND: "WIND"
+      SOLAR: "SOLAR"
+      BIO: "BIO"
+      OTHERRENEW: "OTHERRENEW"
+      NUCLEAR: "NUCLEAR"
+      OTHER: "OTHER"
+      ELEC: "ELEC"
+      HEAT: "HEAT"
+

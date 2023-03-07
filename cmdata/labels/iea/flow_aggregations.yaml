@@ -1,0 +1,80 @@
+# Aggregation of labels for the flow dimension in IEA datasets
+%YAML 1.2
+---
+aggregation_levels:
+  # This list of lists states at which level each aggregation occurs. Could be
+  # determined automatically from the aggregation definitions below, but should
+  # be defined here for convenience and readability. Note, however, that if any
+  # changes are made to one line of aggregations, the levels of other
+  # aggregation lines may also need to be updated.
+  - ["energy_stage"]
+  - ["main_subcategories"]
+
+energy_stage:
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
+  parent: ""
+  data:
+    long_name:
+      PRIMARY: "Primary energy"
+      CONVERSION: "Energy conversion"
+      FINAL: "Final energy"
+    parents:
+      PRIMARY: ""
+      CONVERSION: ""
+      FINAL: ""
+
+main_subcategories:
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
+  parent: "energy_stage"
+  data:
+    long_name:
+      PRODUCTION: "Domestic energy production"
+      NET_IMPORT: "Net imports"
+      STOCKCH: "Stock changes"
+      LOSSES: "Primary energy losses"
+      STATDIFF: "Statistical differences"
+      ELHEAT: "Electricity and heat"
+      OTHEREN: "Other energy industries"
+      INDUSTRY: "Industry"
+      BUILDINGS: "Buildings"
+      TRANSPORT: "Transportation"
+      AGFORESTFISH: "Agriculture/forestry/fishing"
+      OTHERFINAL: "Other final energy"
+      NONEN: "Non-energy use"
+    parents:
+      PRODUCTION: "PRIMARY"
+      NET_IMPORT: "PRIMARY"
+      STOCKCH: "PRIMARY"
+      LOSSES: "PRIMARY"
+      STATDIFF: "PRIMARY"
+      ELHEAT: "CONVERSION"
+      OTHEREN: "CONVERSION"
+      INDUSTRY: "FINAL"
+      BUILDINGS: "FINAL"
+      TRANSPORT: "FINAL"
+      AGFORESTFISH: "FINAL"
+      OTHERFINAL: "FINAL"
+      NONEN: "FINAL"
+
+industry_subsectors:
+  orient: "columns"
+  columns: ["long_name", "parents"]
+  ordered: true
+  parent: "main_subcategories"
+  data:
+    long_name:
+      STEELIND: "Iron and steel"
+      NONFERR: "Non-ferrous metals"
+      NONMETMINERAL: "Non-metal minerals"
+      CHEMICAL: "Chemical industry"
+      OTHERIND: "Other industry"
+    parents:
+      STEELIND: "INDUSTRY"
+      NONFERR: "INDUSTRY"
+      NONMETMINERAL: "INDUSTRY"
+      CHEMICAL: "INDUSTRY"
+      OTHERIND: "INDUSTRY"
