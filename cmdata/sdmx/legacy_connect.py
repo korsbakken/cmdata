@@ -8,6 +8,7 @@ providers, including OECD Stats and the UN Data Service (at least as of
 """
 
 import typing as tp
+import io
 import ssl
 import requests
 import urllib3
@@ -25,8 +26,14 @@ def get_legacy_server_connect_context():
     return ctx
 ###END def get_legacy_server_connect_context
 
-def get_legacy_session() -> requests.Session:
+def get_legacy_session(**kwargs) -> requests.Session:
     """Return a requests.Session with support for SSL legacy server connect.
+
+    Parameters
+    ----------
+    **kwargs
+        Keyword arguments to pass to `requests.session` to create a `Session`
+        instance.
     
     Returns
     -------
@@ -39,6 +46,38 @@ def get_legacy_session() -> requests.Session:
     session.mount('https://', LegacyServerConnectAdapter())
     return session
 ###END def get_legacy_session
+
+def get_legacy_connect_url_stream(
+    url: str,
+    session_kwargs : tp.Optional[tp.Mapping[str, tp.Any]] = None,
+    get_kwargs : tp.Optional[tp.Mapping[str, tp.Any]] = None
+) -> io.BytesIO:
+    """Read a URL with legacy server connect, and return content as BytesIO.
+    
+    Parameters
+    ----------
+    url : str
+        URL to connect to
+    session_kwargs
+        Additional keyword arguments to pass to `requests.session`.
+    get_kwargs
+        Additional keyword arguments to pass to `requests.Session.get`.
+        
+    Returns
+    -------
+    io.BytesIO
+        BytesIO object with the content of the response of a GET query to
+        `url`.
+    """
+    if session_kwargs is None:
+        session_kwargs = dict()
+    if get_kwargs is None:
+        get_kwargs = dict()
+    session: requests.Session = get_legacy_session(**session_kwargs)
+    response: requests.Response = session.get(url, **get_kwargs)
+    bytesio: io.BytesIO = io.BytesIO(response.content)
+    return bytesio
+###END def get_legacy_connect_url_stream
 
 
 class CustomContextHTTPAdapter(requests.adapters.HTTPAdapter):
