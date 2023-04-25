@@ -13,10 +13,31 @@ class SDMXPackage(enum.StrEnum):
 # Make sure that the import and `sdmx_package` are consistent
 sdmx_package: SDMXPackage = SDMXPackage.SDMX1
 if sdmx_package == SDMXPackage.SDMX1:
-    import sdmx1 as sdmx
+    import sdmx as sdmx
 elif sdmx_package == SDMXPackage.PANDASDMX:
     import pandasdmx as sdmx
 else:
     raise RuntimeError('Internal error, flag to specify SDMX package is not '
                        'set correctly.')
 
+from . import legacy_connect
+
+
+def get_legacy_server_connect_sdmx_client(*args, **kwargs) -> sdmx.Client:
+    """Get an SDMX Client with support for SSL legacy server connect.
+    
+    Parameters
+    ----------
+    *args, **kwargs
+        Arguments to pass to `sdmx.Client`
+
+    Returns
+    -------
+    sdmx.Client
+    """
+    client: sdmx.Client = sdmx.Client(*args, **kwargs)
+    client.session.mount(
+        'https://',
+        legacy_connect.LegacyServerConnectAdapter()
+    )
+    return client
